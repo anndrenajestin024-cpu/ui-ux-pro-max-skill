@@ -9,12 +9,12 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#070707;--surface:#0e0e0e;--surface-elevated:#141414;
-  --cream:#F5F2EA;--accent:#C9905B;
+  --cream:#F5F2EA;--accent:#C9905B;--accent-light:#D4A373;
   --text-secondary:rgba(245,242,234,0.6);--text-muted:rgba(245,242,234,0.35);
-  --border-subtle:rgba(245,242,234,0.08);
+  --border-subtle:rgba(245,242,234,0.08);--border-strong:rgba(245,242,234,0.15);
   --font-playfair:'Playfair Display',serif;
   --font-inter:'Inter',sans-serif;
-  --font-space-mono:'Space Mono',monospace;
+  --font-mono:'Space Mono',monospace;
 }
 html{scroll-behavior:smooth;overflow-x:hidden}
 body{
@@ -24,163 +24,100 @@ body{
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 
-.container-x{padding-left:clamp(20px,5vw,80px);padding-right:clamp(20px,5vw,80px)}
-.section-padding{padding:clamp(60px,10vw,120px) clamp(20px,5vw,80px)}
-.eyebrow{font-family:var(--font-space-mono);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted)}
+/* Grain overlay */
+body::after{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  opacity:0.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:128px 128px;
+}
+
+.cx{padding-left:clamp(24px,6vw,96px);padding-right:clamp(24px,6vw,96px)}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--text-muted)}
 
 /* ===== ANIMATIONS ===== */
-.reveal{
-  opacity:0;
-  transform:translateY(60px);
-  transition:opacity 1s cubic-bezier(0.22,1,0.36,1), transform 1s cubic-bezier(0.22,1,0.36,1);
-}
-.reveal.active{opacity:1;transform:translateY(0)}
-.reveal-left{
-  opacity:0;transform:translateX(-80px);
-  transition:opacity 1s cubic-bezier(0.22,1,0.36,1), transform 1s cubic-bezier(0.22,1,0.36,1);
-}
-.reveal-left.active{opacity:1;transform:translateX(0)}
-.reveal-right{
-  opacity:0;transform:translateX(80px);
-  transition:opacity 1s cubic-bezier(0.22,1,0.36,1), transform 1s cubic-bezier(0.22,1,0.36,1);
-}
-.reveal-right.active{opacity:1;transform:translateX(0)}
-.reveal-scale{
-  opacity:0;transform:scale(0.92);
-  transition:opacity 1.2s cubic-bezier(0.22,1,0.36,1), transform 1.2s cubic-bezier(0.22,1,0.36,1);
-}
-.reveal-scale.active{opacity:1;transform:scale(1)}
-.reveal-blur{
-  opacity:0;filter:blur(12px);transform:translateY(30px);
-  transition:opacity 1s ease, filter 1s ease, transform 1s ease;
-}
-.reveal-blur.active{opacity:1;filter:blur(0);transform:translateY(0)}
+.r{opacity:0;transform:translateY(60px);transition:opacity 1.2s cubic-bezier(0.22,1,0.36,1),transform 1.2s cubic-bezier(0.22,1,0.36,1)}
+.r.v{opacity:1;transform:translateY(0)}
+.rl{opacity:0;transform:translateX(-80px);transition:opacity 1.2s cubic-bezier(0.22,1,0.36,1),transform 1.2s cubic-bezier(0.22,1,0.36,1)}
+.rl.v{opacity:1;transform:translateX(0)}
+.rr{opacity:0;transform:translateX(80px);transition:opacity 1.2s cubic-bezier(0.22,1,0.36,1),transform 1.2s cubic-bezier(0.22,1,0.36,1)}
+.rr.v{opacity:1;transform:translateX(0)}
+.rs{opacity:0;transform:scale(0.9);transition:opacity 1.4s cubic-bezier(0.22,1,0.36,1),transform 1.4s cubic-bezier(0.22,1,0.36,1)}
+.rs.v{opacity:1;transform:scale(1)}
+.rb{opacity:0;filter:blur(16px);transform:translateY(30px);transition:opacity 1.2s ease,filter 1.2s ease,transform 1.2s ease}
+.rb.v{opacity:1;filter:blur(0);transform:translateY(0)}
 
-/* Stagger children */
-.stagger .reveal{transition-delay:calc(var(--i,0) * 120ms)}
+/* Stagger */
+[data-d]{transition-delay:calc(var(--d) * 1ms) !important}
 
-/* Parallax sections */
-.parallax-section{
-  position:relative;overflow:hidden;
-}
-.parallax-bg{
-  position:absolute;inset:-20% 0;
-  transition:transform 0.1s linear;
-  will-change:transform;
-}
-
-/* Hero text shimmer */
-@keyframes shimmer{
-  0%{background-position:-200% center}
-  100%{background-position:200% center}
-}
-.shimmer-text{
-  background:linear-gradient(90deg,var(--accent) 0%,#e8c9a0 25%,var(--accent) 50%,#e8c9a0 75%,var(--accent) 100%);
-  background-size:200% auto;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  animation:shimmer 6s linear infinite;
+/* Shimmer */
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+.shimmer{
+  background:linear-gradient(90deg,var(--accent) 0%,#e8c9a0 30%,var(--accent) 50%,#e8c9a0 70%,var(--accent) 100%);
+  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:shimmer 5s linear infinite;
 }
 
 /* Typewriter */
-.typewriter{overflow:hidden;border-right:2px solid var(--accent);white-space:normal;display:inline}
 @keyframes blink{0%,100%{border-color:var(--accent)}50%{border-color:transparent}}
-.typewriter-cursor{animation:blink 1s step-end infinite}
+.tw-cursor{animation:blink 1s step-end infinite}
 
-/* Hover card */
-.hover-card{
-  transition:transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease;
-}
-.hover-card:hover{
-  transform:translateY(-8px) scale(1.02);
-  box-shadow:0 20px 60px rgba(201,144,91,0.08);
-}
+/* Divider sweep */
+.div-sweep{height:1px;background:var(--border-subtle);position:relative;overflow:hidden}
+.div-sweep::after{content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,var(--accent),transparent);transition:left 1.5s cubic-bezier(0.22,1,0.36,1)}
+.div-sweep.v::after{left:100%}
+
+/* Hover lift */
+.lift{transition:transform 0.5s cubic-bezier(0.22,1,0.36,1),box-shadow 0.5s ease}
+.lift:hover{transform:translateY(-6px);box-shadow:0 24px 64px rgba(201,144,91,0.06)}
+
+/* Card base */
+.card{background:var(--surface);border:1px solid var(--border-subtle);border-radius:16px;padding:28px;display:flex;flex-direction:column;justify-content:flex-end;min-height:240px;transition:transform 0.5s cubic-bezier(0.22,1,0.36,1),border-color 0.4s ease}
+.card:hover{transform:translateY(-4px);border-color:rgba(201,144,91,0.18)}
 
 /* Photo placeholder */
-.photo-placeholder{
-  background:var(--surface);border:1px solid var(--border-subtle);border-radius:16px;
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-  position:relative;
-}
-.photo-placeholder::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(201,144,91,0.03) 0%,transparent 50%,rgba(201,144,91,0.02) 100%);
-}
-.photo-placeholder span{color:var(--text-muted);font-size:13px;position:relative;z-index:1}
+.ph{background:var(--surface);border:1px solid var(--border-subtle);border-radius:16px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.ph::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,144,91,0.04) 0%,transparent 40%,rgba(201,144,91,0.02) 100%)}
+.ph span{color:var(--text-muted);font-size:12px;letter-spacing:0.1em;position:relative;z-index:1}
 
-/* Card */
-.card{
-  background:var(--surface);border:1px solid var(--border-subtle);border-radius:16px;
-  padding:24px;display:flex;flex-direction:column;justify-content:flex-end;min-height:220px;
-  transition:transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.4s ease;
-}
-.card:hover{transform:translateY(-4px);border-color:rgba(201,144,91,0.2)}
-
-/* Divider animation */
-.divider-animated{
-  height:1px;background:var(--border-subtle);position:relative;overflow:hidden;
-}
-.divider-animated::after{
-  content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,var(--accent),transparent);
-  transition:left 1.2s cubic-bezier(0.22,1,0.36,1);
-}
-.divider-animated.active::after{left:100%}
-
-/* Smooth section transitions */
-.section-dark{background:var(--bg)}
-.section-cream{background:var(--cream);color:var(--bg)}
-.section-gradient{
-  background:linear-gradient(180deg,var(--bg) 0%,#0d1117 50%,var(--bg) 100%);
-}
-
-/* Number counter animation */
-@keyframes countUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* Progress bar */
+.scroll-progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:200;transform-origin:left;transform:scaleX(0)}
 
 /* Navbar */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px clamp(20px,5vw,80px);
-  mix-blend-mode:difference;
-  transition:padding 0.4s ease;
-}
-nav.scrolled{padding:12px clamp(20px,5vw,80px);backdrop-filter:blur(20px)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:28px clamp(24px,6vw,96px);transition:all 0.5s cubic-bezier(0.22,1,0.36,1)}
+nav.scrolled{padding-top:16px;padding-bottom:16px;background:rgba(7,7,7,0.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
 
-/* Scroll progress */
-.scroll-progress{
-  position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:200;
-  transform-origin:left;transform:scaleX(0);transition:none;
-}
+/* CREAM section styling */
+.cream-section{background:var(--cream);color:var(--bg)}
+.cream-section .eyebrow{color:rgba(7,7,7,0.4)}
+.cream-section .accent-text{color:var(--accent)}
 
-/* Full-screen section overlay animation */
-.cinematic-section{
-  position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;
-  overflow:hidden;
-}
-.cinematic-section .bg-overlay{
-  position:absolute;inset:0;opacity:0.7;
-  transition:opacity 1.5s ease;
-}
-.cinematic-section.active .bg-overlay{opacity:0.85}
+/* Cinematic full-bleed */
+.cinematic{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.cinematic-short{position:relative;min-height:70vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
 
-/* Mobile responsive */
+/* Team card */
+.team-card{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--border-subtle);background:var(--surface)}
+.team-card .overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.95) 0%,rgba(7,7,7,0.4) 40%,transparent 70%);z-index:1}
+.team-card .info{position:relative;z-index:2;padding:28px}
+
+/* Responsive */
 @media(max-width:768px){
-  .grid-3{grid-template-columns:1fr !important}
-  .grid-2{grid-template-columns:1fr !important}
-  .hide-mobile{display:none !important}
-  .stack-mobile{flex-direction:column !important}
+  .g3{grid-template-columns:1fr !important}
+  .g2{grid-template-columns:1fr !important}
+  .hide-m{display:none !important}
+  .stack-m{flex-direction:column !important}
+  .cinematic,.cinematic-short{min-height:70vh}
 }
 </style>
 </head>
 <body>
 
-<!-- Scroll Progress Bar -->
-<div class="scroll-progress" id="scrollProgress"></div>
+<div class="scroll-progress" id="sp"></div>
 
 <!-- ===== NAVBAR ===== -->
-<nav id="navbar">
-  <div style="display:flex;gap:24px;font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,242,234,0.7)">
+<nav id="nav">
+  <div style="display:flex;gap:28px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(245,242,234,0.5)">
     <a href="#" style="transition:color 0.3s" onmouseover="this.style.color='#C9905B'" onmouseout="this.style.color=''">WA</a>
     <a href="#" style="transition:color 0.3s" onmouseover="this.style.color='#C9905B'" onmouseout="this.style.color=''">X</a>
     <a href="#" style="transition:color 0.3s" onmouseover="this.style.color='#C9905B'" onmouseout="this.style.color=''">IG</a>
@@ -188,200 +125,181 @@ nav.scrolled{padding:12px clamp(20px,5vw,80px);backdrop-filter:blur(20px)}
     <a href="#" style="transition:color 0.3s" onmouseover="this.style.color='#C9905B'" onmouseout="this.style.color=''">EMAIL</a>
   </div>
   <div style="position:absolute;left:50%;transform:translateX(-50%)">
-    <span style="font-family:var(--font-playfair);color:var(--accent);font-size:18px;letter-spacing:0.05em;font-style:italic">Bloomingbird</span>
+    <span style="font-family:var(--font-playfair);color:var(--accent);font-size:20px;letter-spacing:0.05em;font-style:italic">Bloomingbird</span>
   </div>
-  <div style="display:flex;flex-direction:column;gap:6px;cursor:pointer">
-    <span style="width:32px;height:2px;background:var(--cream);transition:transform 0.3s"></span>
-    <span style="width:32px;height:2px;background:var(--cream);transition:transform 0.3s"></span>
+  <div style="display:flex;flex-direction:column;gap:7px;cursor:pointer">
+    <span style="width:28px;height:1.5px;background:var(--cream);display:block"></span>
+    <span style="width:28px;height:1.5px;background:var(--cream);display:block"></span>
   </div>
 </nav>
 
-<!-- ===== HERO ===== -->
-<section class="cinematic-section" style="background:#070707">
-  <div class="bg-overlay" style="background:linear-gradient(to bottom,rgba(26,26,26,0.3),rgba(7,7,7,0.95))"></div>
-  <div style="position:absolute;inset:0;background:#111;opacity:0.5"></div>
-
-  <div class="container-x" style="position:relative;z-index:20;flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:128px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:32px" class="stack-mobile">
-      <div style="max-width:640px">
-        <h1 class="reveal" style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:clamp(32px,5vw,64px);line-height:1.1;margin-bottom:24px">Property. Strategy. Legacy.</h1>
-        <p class="reveal eyebrow" style="color:var(--accent);transition-delay:200ms">A PRIVATE REAL ESTATE ADVISORY BUILT ON TRUST AND INSIGHT.</p>
+<!-- ═══════════════════════════════════════════ -->
+<!-- HERO — Dark, full bleed                     -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="cinematic" style="background:#070707">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(201,144,91,0.04) 0%,transparent 60%)"></div>
+  <div class="cx" style="position:relative;z-index:10;flex:1;display:flex;flex-direction:column;justify-content:center;padding-top:160px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:40px" class="stack-m">
+      <div style="max-width:680px">
+        <h1 class="r" style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:clamp(36px,5.5vw,72px);line-height:1.08;margin-bottom:28px;font-weight:400">Property. Strategy. Legacy.</h1>
+        <p class="r eyebrow" style="color:var(--accent);--d:200" data-d>A PRIVATE REAL ESTATE ADVISORY BUILT ON TRUST AND INSIGHT.</p>
       </div>
-      <div style="text-align:right" class="hide-mobile">
-        <p class="reveal" style="font-family:var(--font-playfair);font-style:italic;color:rgba(245,242,234,0.8);font-size:clamp(24px,3.5vw,48px);line-height:1.1;transition-delay:300ms">Company<br>Profile</p>
+      <div style="text-align:right" class="hide-m">
+        <p class="r" style="font-family:var(--font-playfair);font-style:italic;color:rgba(245,242,234,0.7);font-size:clamp(28px,4vw,56px);line-height:1.05;--d:300" data-d>Company<br>Profile</p>
       </div>
     </div>
   </div>
-  <div class="container-x" style="position:relative;z-index:20;padding-bottom:32px">
-    <h2 class="reveal-scale" style="font-size:clamp(48px,12vw,180px);font-family:var(--font-playfair);font-weight:400;letter-spacing:-0.06em;line-height:0.88;transition-delay:500ms">
-      <span class="shimmer-text">Bloomingbird</span><span style="font-size:0.3em;vertical-align:super;margin-left:8px;color:var(--accent)">&reg;</span>
+  <div class="cx" style="position:relative;z-index:10;padding-bottom:40px">
+    <h2 class="rs" style="font-size:clamp(56px,14vw,200px);font-family:var(--font-playfair);font-weight:400;letter-spacing:-0.06em;line-height:0.85;--d:500" data-d>
+      <span class="shimmer">Bloomingbird</span><span style="font-size:0.25em;vertical-align:super;margin-left:8px;color:var(--accent)">&reg;</span>
     </h2>
   </div>
 </section>
 
-<!-- ===== WHY BLOOMINGBIRD — Advice Before Commission ===== -->
-<section class="cinematic-section" style="background:linear-gradient(to bottom,#1a3a4a,#0d2633)">
-  <div class="bg-overlay" style="background:linear-gradient(180deg,transparent 30%,rgba(7,7,7,0.4) 100%)"></div>
-  <div class="container-x" style="position:relative;z-index:20;padding-bottom:48px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px" class="stack-mobile">
+<!-- ═══════════════════════════════════════════ -->
+<!-- WHY BLOOMINGBIRD — Cinematic teal panel      -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="cinematic" style="background:linear-gradient(165deg,#1a3a4a 0%,#0d2633 60%,#0a1a24 100%)">
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(7,7,7,0.5) 100%)"></div>
+  <div class="cx" style="position:relative;z-index:10;padding-bottom:64px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:32px" class="stack-m">
       <div>
-        <h3 class="reveal" style="font-size:clamp(28px,5vw,64px);font-family:var(--font-playfair);color:var(--cream);font-weight:400;margin-bottom:12px">&ldquo;Advice Should Come<br>Before Commission&rdquo;</h3>
-        <p class="reveal" style="color:var(--text-secondary);font-size:14px;transition-delay:200ms">Bloomingbird was founded on a simple belief:</p>
-        <p class="reveal" style="color:var(--accent);font-size:12px;margin-top:4px;letter-spacing:0.1em;transition-delay:300ms">Advice Before Commission.</p>
+        <h3 class="r" style="font-size:clamp(32px,6vw,80px);font-family:var(--font-playfair);color:var(--cream);font-weight:400;line-height:1.05;margin-bottom:16px">&ldquo;Advice Should Come<br>Before Commission&rdquo;</h3>
+        <p class="r" style="color:var(--text-secondary);font-size:15px;--d:200" data-d>Bloomingbird was founded on a simple belief:</p>
+        <p class="r" style="color:var(--accent);font-size:12px;margin-top:6px;letter-spacing:0.15em;--d:300" data-d>ADVICE BEFORE COMMISSION.</p>
       </div>
-      <p class="reveal eyebrow" style="text-align:right;transition-delay:400ms">WHY BLOOMINGBIRD</p>
+      <p class="r eyebrow" style="text-align:right;--d:400" data-d>WHY BLOOMINGBIRD</p>
     </div>
   </div>
 </section>
 
-<!-- Body text -->
-<section class="section-dark section-padding">
-  <div style="max-width:800px;margin:0 auto;color:var(--text-secondary);font-size:16px;line-height:1.8">
-    <p class="reveal" style="margin-bottom:24px">Every property decision deserves thoughtful advice, not a sales pitch. Every recommendation begins with understanding your ambitions, analysing the market, and identifying opportunities that create genuine long-term value rather than simply another transaction.</p>
-    <p class="reveal" style="margin-bottom:24px;transition-delay:150ms">Whether you are purchasing your first home, building an international portfolio, or investing for the next generation, our responsibility remains the same: to guide every decision with clarity, integrity, and conviction.</p>
-    <p class="reveal" style="color:var(--accent);font-style:italic;font-family:var(--font-playfair);font-size:20px;transition-delay:300ms">We work for your outcome, not our commission.</p>
-  </div>
-</section>
-
-<!-- Every Property Has A Price -->
-<section class="cinematic-section" style="min-height:70vh;background:linear-gradient(135deg,#0a1520,#141414)">
-  <div class="bg-overlay" style="background:linear-gradient(180deg,transparent,rgba(7,7,7,0.3))"></div>
-  <div class="container-x" style="position:relative;z-index:20;padding-bottom:48px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px" class="stack-mobile">
-      <h3 class="reveal" style="font-size:clamp(28px,5vw,64px);font-family:var(--font-playfair);color:var(--cream);font-weight:400">Every Property Has A Price.<br>Only A Few Create Legacy.</h3>
-      <p class="reveal eyebrow" style="text-align:right;transition-delay:200ms">OUR BELIEF</p>
+<!-- Body text — CREAM section ← Arpeggio alternation -->
+<section class="cream-section" style="padding:clamp(80px,12vw,160px) 0">
+  <div class="cx">
+    <div style="max-width:720px;margin:0 auto;font-size:17px;line-height:2;color:rgba(7,7,7,0.7)">
+      <p class="r" style="margin-bottom:28px">Every property decision deserves thoughtful advice, not a sales pitch. Every recommendation begins with understanding your ambitions, analysing the market, and identifying opportunities that create genuine long-term value rather than simply another transaction.</p>
+      <p class="r" style="margin-bottom:28px;--d:150" data-d>Whether you are purchasing your first home, building an international portfolio, or investing for the next generation, our responsibility remains the same: to guide every decision with clarity, integrity, and conviction.</p>
+      <p class="r" style="color:var(--accent);font-style:italic;font-family:var(--font-playfair);font-size:22px;--d:300" data-d>We work for your outcome, not our commission.</p>
     </div>
   </div>
 </section>
 
-<section class="section-dark section-padding">
-  <div style="max-width:800px;margin:0 auto;color:var(--text-secondary);font-size:16px;line-height:1.8">
-    <p class="reveal" style="margin-bottom:24px">The strongest portfolios are never built by following the market. They are built by understanding it.</p>
-    <p class="reveal" style="margin-bottom:24px;transition-delay:100ms">At Bloomingbird, we believe real estate is more than an asset on a balance sheet. It is a decision that shapes lifestyles, protects wealth, and creates opportunities that extend far beyond a single generation.</p>
-    <p class="reveal" style="margin-bottom:24px;transition-delay:200ms">Every recommendation begins with understanding your ambitions, not simply your budget. Successful investing is not about owning more property. It is about owning the right property at the right time, for the right reason.</p>
-    <p class="reveal-blur" style="color:var(--accent);font-style:italic;font-family:var(--font-playfair);font-size:20px;text-align:center;padding:24px 0;transition-delay:300ms">&ldquo;Create lasting value... not momentary excitement.&rdquo;</p>
-    <p class="reveal" style="transition-delay:400ms">Rather than chasing trends, we focus on identifying opportunities backed by research, market intelligence, and a deep understanding of Dubai's evolving landscape.</p>
-  </div>
-</section>
-
-<!-- ===== APPROACH ===== -->
-<section class="cinematic-section" style="min-height:60vh;background:linear-gradient(135deg,#0f1f2e,#070707)">
-  <div class="container-x" style="position:relative;z-index:20;padding-bottom:48px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px" class="stack-mobile">
-      <h3 class="reveal" style="font-size:clamp(28px,5vw,64px);font-family:var(--font-playfair);color:var(--cream);font-weight:400">The Bloomingbird Method</h3>
-      <p class="reveal eyebrow" style="text-align:right;transition-delay:200ms">OUR APPROACH</p>
+<!-- Every Property — Cinematic dark panel -->
+<section class="cinematic-short" style="background:linear-gradient(135deg,#0a1520 0%,#111 50%,#0a0a0a 100%)">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 80%,rgba(201,144,91,0.03) 0%,transparent 50%)"></div>
+  <div class="cx" style="position:relative;z-index:10;padding-bottom:64px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:32px" class="stack-m">
+      <h3 class="r" style="font-size:clamp(32px,6vw,80px);font-family:var(--font-playfair);color:var(--cream);font-weight:400;line-height:1.05">Every Property Has A Price.<br>Only A Few Create Legacy.</h3>
+      <p class="r eyebrow" style="text-align:right;--d:200" data-d>OUR BELIEF</p>
     </div>
   </div>
 </section>
 
-<section class="section-dark section-padding">
-  <div class="stagger grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:48px;max-width:1000px;margin:0 auto">
-    <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:0">
-      <p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px">DISCOVER</p>
-      <p style="color:var(--cream)">Understand your goals and timeline</p>
-    </div>
-    <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:1">
-      <p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px">ANALYSE</p>
-      <p style="color:var(--cream)">Deep market intelligence and research</p>
-    </div>
-    <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:2">
-      <p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px">CURATE</p>
-      <p style="color:var(--cream)">Handpicked opportunities aligned to you</p>
-    </div>
-    <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:3">
-      <p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px">ACQUIRE</p>
-      <p style="color:var(--cream)">Confident negotiations and execution</p>
-    </div>
-    <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:4">
-      <p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px">MANAGE</p>
-      <p style="color:var(--cream)">Long-term asset support and oversight</p>
-    </div>
-    <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:5">
-      <p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px">GROW</p>
-      <p style="color:var(--cream)">Building lasting, generational wealth</p>
+<!-- Belief body — CREAM section -->
+<section class="cream-section" style="padding:clamp(80px,12vw,160px) 0">
+  <div class="cx">
+    <div style="max-width:720px;margin:0 auto;font-size:17px;line-height:2;color:rgba(7,7,7,0.7)">
+      <p class="r" style="margin-bottom:28px">The strongest portfolios are never built by following the market. They are built by understanding it.</p>
+      <p class="r" style="margin-bottom:28px;--d:100" data-d>At Bloomingbird, we believe real estate is more than an asset on a balance sheet. It is a decision that shapes lifestyles, protects wealth, and creates opportunities that extend far beyond a single generation.</p>
+      <p class="r" style="margin-bottom:28px;--d:200" data-d>Every recommendation begins with understanding your ambitions, not simply your budget. Successful investing is not about owning more property. It is about owning the right property at the right time, for the right reason.</p>
+      <p class="rb" style="color:var(--accent);font-style:italic;font-family:var(--font-playfair);font-size:22px;text-align:center;padding:32px 0;--d:300" data-d>&ldquo;Create lasting value... not momentary excitement.&rdquo;</p>
+      <p class="r" style="--d:400" data-d>Rather than chasing trends, we focus on identifying opportunities backed by research, market intelligence, and a deep understanding of Dubai's evolving landscape.</p>
     </div>
   </div>
-  <blockquote class="reveal-blur" style="max-width:720px;margin:clamp(60px,10vw,120px) auto 0;text-align:center">
-    <p style="font-family:var(--font-playfair);font-style:italic;color:rgba(245,242,234,0.9);font-size:clamp(18px,2.5vw,28px);line-height:1.5">Every client enters the market with different ambitions.<br>Some are searching for a family home. Others are building international portfolios.<br>Many are investing for future generations.<br><br>Our role is to transform those ambitions into carefully considered property strategies.</p>
-  </blockquote>
 </section>
 
-<!-- ===== MILESTONES ===== -->
-<section class="section-dark section-padding">
-  <div style="max-width:1152px;margin:0 auto">
-    <div class="reveal" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-      <span style="color:var(--accent);font-size:18px">&#9679;</span>
+<!-- ═══════════════════════════════════════════ -->
+<!-- APPROACH — Cinematic panel                   -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="cinematic-short" style="min-height:60vh;background:linear-gradient(135deg,#0f1f2e 0%,#070707 100%)">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 20% 70%,rgba(201,144,91,0.03),transparent 50%)"></div>
+  <div class="cx" style="position:relative;z-index:10;padding-bottom:64px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:32px" class="stack-m">
+      <h3 class="r" style="font-size:clamp(32px,6vw,80px);font-family:var(--font-playfair);color:var(--cream);font-weight:400;line-height:1.05">The Bloomingbird Method</h3>
+      <p class="r eyebrow" style="text-align:right;--d:200" data-d>OUR APPROACH</p>
+    </div>
+  </div>
+</section>
+
+<!-- Approach steps — CREAM -->
+<section class="cream-section" style="padding:clamp(80px,12vw,160px) 0">
+  <div class="cx">
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:48px 64px;max-width:1000px;margin:0 auto">
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.08);padding-top:24px" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px;font-weight:500">DISCOVER</p><p style="color:rgba(7,7,7,0.6);font-size:15px;line-height:1.7">Understand your goals and timeline</p></div>
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.08);padding-top:24px;--d:80" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px;font-weight:500">ANALYSE</p><p style="color:rgba(7,7,7,0.6);font-size:15px;line-height:1.7">Deep market intelligence and research</p></div>
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.08);padding-top:24px;--d:160" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px;font-weight:500">CURATE</p><p style="color:rgba(7,7,7,0.6);font-size:15px;line-height:1.7">Handpicked opportunities aligned to you</p></div>
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.08);padding-top:24px;--d:240" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px;font-weight:500">ACQUIRE</p><p style="color:rgba(7,7,7,0.6);font-size:15px;line-height:1.7">Confident negotiations and execution</p></div>
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.08);padding-top:24px;--d:320" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px;font-weight:500">MANAGE</p><p style="color:rgba(7,7,7,0.6);font-size:15px;line-height:1.7">Long-term asset support and oversight</p></div>
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.08);padding-top:24px;--d:400" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:12px;font-weight:500">GROW</p><p style="color:rgba(7,7,7,0.6);font-size:15px;line-height:1.7">Building lasting, generational wealth</p></div>
+    </div>
+    <blockquote class="rb" style="max-width:720px;margin:clamp(80px,10vw,140px) auto 0;text-align:center;--d:200" data-d>
+      <p style="font-family:var(--font-playfair);font-style:italic;color:rgba(7,7,7,0.75);font-size:clamp(18px,2.5vw,28px);line-height:1.6">Every client enters the market with different ambitions.<br>Some are searching for a family home. Others are building international portfolios.<br>Many are investing for future generations.<br><br>Our role is to transform those ambitions into carefully considered property strategies.</p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MILESTONES — Dark                            -->
+<!-- ═══════════════════════════════════════════ -->
+<section style="background:var(--bg);padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="max-width:1200px;margin:0 auto">
+    <div class="r" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+      <span style="color:var(--accent);font-size:8px">&#9679;</span>
       <h3 style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:20px">Our Milestones</h3>
-      <span style="color:var(--text-muted);font-size:14px;margin-left:8px">our track record</span>
+      <span style="color:var(--text-muted);font-size:13px;margin-left:8px">our track record</span>
     </div>
-    <div class="divider-animated" style="margin-bottom:48px"></div>
+    <div class="div-sweep" style="margin-bottom:48px"></div>
 
-    <h2 class="reveal" style="font-size:clamp(22px,3vw,40px);font-family:var(--font-playfair);color:var(--cream);max-width:720px;margin-bottom:16px">Numbers that reflect the trust our clients place in Bloomingbird.</h2>
+    <h2 class="r" style="font-size:clamp(24px,3.5vw,48px);font-family:var(--font-playfair);color:var(--cream);max-width:720px;margin-bottom:16px;font-weight:400;line-height:1.15">Numbers that reflect the trust our clients place in Bloomingbird.</h2>
 
-    <blockquote class="reveal-blur" style="margin:48px 0;padding:32px 0;border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
+    <blockquote class="rb" style="margin:56px 0;padding:36px 0;border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle)">
       <p style="font-family:var(--font-playfair);font-style:italic;color:var(--accent);font-size:clamp(16px,2vw,22px);text-align:center">&ldquo;The greatest compliment we receive is not another transaction.<br>It is when a client introduces us to their family.&rdquo;</p>
     </blockquote>
 
-    <div class="stagger grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px">
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:0">
-        <p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px">Sales Facilitated</p>
-        <p class="counter" data-target="1" style="font-size:clamp(36px,5vw,56px);font-weight:300;letter-spacing:-0.02em;color:var(--accent)">AED 1B+</p>
-      </div>
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:1">
-        <p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px">Properties Sold</p>
-        <p style="font-size:clamp(36px,5vw,56px);font-weight:300;letter-spacing:-0.02em;color:var(--cream)">500+</p>
-      </div>
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:2">
-        <p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px">Happy Investors</p>
-        <p style="font-size:clamp(36px,5vw,56px);font-weight:300;letter-spacing:-0.02em;color:var(--cream)">1000+</p>
-      </div>
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:3">
-        <p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px">Experience in Years</p>
-        <p style="font-size:clamp(36px,5vw,56px);font-weight:300;letter-spacing:-0.02em;color:var(--cream)">13+</p>
-      </div>
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:4">
-        <p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px">Clients Satisfied</p>
-        <p style="font-size:clamp(36px,5vw,56px);font-weight:300;letter-spacing:-0.02em;color:var(--cream)">95%+</p>
-      </div>
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;--i:5">
-        <p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px">Repeated Referral</p>
-        <p style="font-size:clamp(36px,5vw,56px);font-weight:300;letter-spacing:-0.02em;color:var(--cream)">80%</p>
-      </div>
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:56px">
+      <div class="r" style="border-top:1px solid var(--border-strong);padding-top:28px"><p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Sales Facilitated</p><p style="font-size:clamp(40px,6vw,64px);font-weight:300;letter-spacing:-0.03em;color:var(--accent)">AED 1B+</p></div>
+      <div class="r" style="border-top:1px solid var(--border-strong);padding-top:28px;--d:80" data-d><p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Properties Sold</p><p style="font-size:clamp(40px,6vw,64px);font-weight:300;letter-spacing:-0.03em;color:var(--cream)">500+</p></div>
+      <div class="r" style="border-top:1px solid var(--border-strong);padding-top:28px;--d:160" data-d><p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Happy Investors</p><p style="font-size:clamp(40px,6vw,64px);font-weight:300;letter-spacing:-0.03em;color:var(--cream)">1000+</p></div>
+      <div class="r" style="border-top:1px solid var(--border-strong);padding-top:28px;--d:240" data-d><p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Experience in Years</p><p style="font-size:clamp(40px,6vw,64px);font-weight:300;letter-spacing:-0.03em;color:var(--cream)">13+</p></div>
+      <div class="r" style="border-top:1px solid var(--border-strong);padding-top:28px;--d:320" data-d><p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Clients Satisfied</p><p style="font-size:clamp(40px,6vw,64px);font-weight:300;letter-spacing:-0.03em;color:var(--cream)">95%+</p></div>
+      <div class="r" style="border-top:1px solid var(--border-strong);padding-top:28px;--d:400" data-d><p style="color:var(--text-muted);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px">Repeated Referral</p><p style="font-size:clamp(40px,6vw,64px);font-weight:300;letter-spacing:-0.03em;color:var(--cream)">80%</p></div>
     </div>
 
-    <p class="reveal-blur" style="text-align:center;color:var(--text-secondary);font-style:italic;font-family:var(--font-playfair);font-size:18px;margin-top:64px">&ldquo;Connecting people with places they'll call home.&rdquo;</p>
+    <p class="rb" style="text-align:center;color:var(--text-secondary);font-style:italic;font-family:var(--font-playfair);font-size:18px;margin-top:80px">&ldquo;Connecting people with places they'll call home.&rdquo;</p>
   </div>
 </section>
 
-<!-- ===== PRINCIPLES ===== -->
-<section class="section-dark">
-  <div class="section-padding" style="text-align:center">
-    <h2 class="reveal-scale" style="font-size:clamp(36px,7vw,96px);font-weight:700;color:rgba(245,242,234,0.95);letter-spacing:-0.02em">our principles</h2>
-    <p class="reveal-blur" style="font-family:var(--font-playfair);font-style:italic;color:var(--text-secondary);font-size:clamp(18px,2.5vw,32px);max-width:720px;margin:32px auto 0;line-height:1.6;transition-delay:300ms">&ldquo;Real estate isn't about selling property.<br>It's about helping people make decisions they'll be proud of for years to come.&rdquo;</p>
+<!-- ═══════════════════════════════════════════ -->
+<!-- PRINCIPLES — Cream section                   -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="cream-section" style="padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="text-align:center;margin-bottom:clamp(60px,8vw,120px)">
+    <h2 class="rs" style="font-size:clamp(48px,9vw,120px);font-weight:700;color:rgba(7,7,7,0.9);letter-spacing:-0.03em;line-height:0.95">our principles</h2>
+    <p class="rb" style="font-family:var(--font-playfair);font-style:italic;color:rgba(7,7,7,0.45);font-size:clamp(18px,2.5vw,30px);max-width:680px;margin:36px auto 0;line-height:1.6;--d:300" data-d>&ldquo;Real estate isn't about selling property.<br>It's about helping people make decisions they'll be proud of for years to come.&rdquo;</p>
   </div>
 
-  <div class="container-x" style="padding-bottom:clamp(60px,10vw,120px)">
+  <div class="cx">
     <div style="max-width:1000px;margin:0 auto">
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding:48px 0">
-        <div style="display:flex;gap:32px;flex-wrap:wrap" class="stack-mobile">
-          <h3 style="font-size:clamp(22px,3vw,40px);font-family:var(--font-playfair);color:var(--cream);min-width:200px">Our Vision</h3>
-          <p style="color:var(--text-secondary);line-height:1.8;max-width:640px">To set the benchmark for trusted real estate advisory in Dubai by delivering intelligent investment strategies, exceptional client experiences, and lasting value for clients worldwide.</p>
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding:56px 0">
+        <div style="display:flex;gap:48px;flex-wrap:wrap" class="stack-m">
+          <h3 style="font-size:clamp(24px,3.5vw,44px);font-family:var(--font-playfair);color:rgba(7,7,7,0.85);min-width:200px;font-weight:400">Our Vision</h3>
+          <p style="color:rgba(7,7,7,0.55);line-height:1.9;max-width:600px;font-size:16px">To set the benchmark for trusted real estate advisory in Dubai by delivering intelligent investment strategies, exceptional client experiences, and lasting value for clients worldwide.</p>
         </div>
       </div>
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding:48px 0;transition-delay:150ms">
-        <div style="display:flex;gap:32px;flex-wrap:wrap" class="stack-mobile">
-          <h3 style="font-size:clamp(22px,3vw,40px);font-family:var(--font-playfair);color:var(--cream);min-width:200px">Our Mission</h3>
-          <p style="color:var(--text-secondary);line-height:1.8;max-width:640px">To provide personalised real estate solutions driven by market expertise, integrity, and strategic guidance, empowering every client to make confident decisions with a long-term perspective.</p>
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding:56px 0;--d:150" data-d>
+        <div style="display:flex;gap:48px;flex-wrap:wrap" class="stack-m">
+          <h3 style="font-size:clamp(24px,3.5vw,44px);font-family:var(--font-playfair);color:rgba(7,7,7,0.85);min-width:200px;font-weight:400">Our Mission</h3>
+          <p style="color:rgba(7,7,7,0.55);line-height:1.9;max-width:600px;font-size:16px">To provide personalised real estate solutions driven by market expertise, integrity, and strategic guidance, empowering every client to make confident decisions with a long-term perspective.</p>
         </div>
       </div>
-      <div class="reveal" style="border-top:1px solid var(--border-subtle);padding:48px 0;transition-delay:300ms">
-        <div style="display:flex;gap:32px;flex-wrap:wrap" class="stack-mobile">
-          <h3 style="font-size:clamp(22px,3vw,40px);font-family:var(--font-playfair);color:var(--cream);min-width:200px">Our Values</h3>
-          <div class="stagger grid-2" style="display:grid;grid-template-columns:repeat(2,1fr);gap:40px;max-width:640px">
-            <div class="reveal" style="--i:0"><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:8px">TRUST</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Honesty, consistency and accountability in every relationship we build.</p></div>
-            <div class="reveal" style="--i:1"><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:8px">TRANSPARENCY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Clear communication and objective advice at every stage of the journey.</p></div>
-            <div class="reveal" style="--i:2"><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:8px">EXPERTISE</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Deep market knowledge and strategic insight delivering informed solutions.</p></div>
-            <div class="reveal" style="--i:3"><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:8px">EXCELLENCE</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Exceptional service through professionalism, precision and attention to detail.</p></div>
+      <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding:56px 0;--d:300" data-d>
+        <div style="display:flex;gap:48px;flex-wrap:wrap" class="stack-m">
+          <h3 style="font-size:clamp(24px,3.5vw,44px);font-family:var(--font-playfair);color:rgba(7,7,7,0.85);min-width:200px;font-weight:400">Our Values</h3>
+          <div class="g2" style="display:grid;grid-template-columns:repeat(2,1fr);gap:40px;max-width:600px">
+            <div><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:8px;font-weight:500">TRUST</p><p style="color:rgba(7,7,7,0.55);font-size:14px;line-height:1.8">Honesty, consistency and accountability in every relationship we build.</p></div>
+            <div><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:8px;font-weight:500">TRANSPARENCY</p><p style="color:rgba(7,7,7,0.55);font-size:14px;line-height:1.8">Clear communication and objective advice at every stage of the journey.</p></div>
+            <div><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:8px;font-weight:500">EXPERTISE</p><p style="color:rgba(7,7,7,0.55);font-size:14px;line-height:1.8">Deep market knowledge and strategic insight delivering informed solutions.</p></div>
+            <div><p style="color:var(--accent);font-size:12px;letter-spacing:0.3em;margin-bottom:8px;font-weight:500">EXCELLENCE</p><p style="color:rgba(7,7,7,0.55);font-size:14px;line-height:1.8">Exceptional service through professionalism, precision and attention to detail.</p></div>
           </div>
         </div>
       </div>
@@ -389,136 +307,146 @@ nav.scrolled{padding:12px clamp(20px,5vw,80px);backdrop-filter:blur(20px)}
   </div>
 </section>
 
-<!-- ===== WHAT WE DO ===== -->
-<section class="section-dark">
-  <div class="section-padding" style="text-align:center">
-    <p class="reveal eyebrow" style="color:var(--accent);margin-bottom:16px">WHAT WE DO</p>
-    <h2 class="reveal" style="font-size:clamp(22px,3vw,40px);font-family:var(--font-playfair);color:var(--cream);max-width:720px;margin:0 auto 24px;transition-delay:100ms">Creating long-term value</h2>
-    <p class="reveal-blur" style="font-family:var(--font-playfair);font-style:italic;color:var(--text-secondary);font-size:clamp(16px,2vw,22px);max-width:640px;margin:0 auto;transition-delay:200ms">&ldquo;The greatest compliment we receive is not another transaction.<br>It is when a client introduces us to their family.&rdquo;</p>
+<!-- ═══════════════════════════════════════════ -->
+<!-- WHAT WE DO — Dark                            -->
+<!-- ═══════════════════════════════════════════ -->
+<section style="background:var(--bg);padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="text-align:center;margin-bottom:clamp(48px,6vw,80px)">
+    <p class="r eyebrow" style="color:var(--accent);margin-bottom:20px">WHAT WE DO</p>
+    <h2 class="r" style="font-size:clamp(26px,3.5vw,48px);font-family:var(--font-playfair);color:var(--cream);max-width:720px;margin:0 auto 28px;font-weight:400;--d:100" data-d>Creating long-term value</h2>
+    <p class="rb" style="font-family:var(--font-playfair);font-style:italic;color:var(--text-secondary);font-size:clamp(16px,2vw,22px);max-width:600px;margin:0 auto;--d:200" data-d>&ldquo;The greatest compliment we receive is not another transaction.<br>It is when a client introduces us to their family.&rdquo;</p>
   </div>
 
-  <div class="container-x" style="padding-bottom:clamp(60px,10vw,120px)">
-    <div class="stagger grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1152px;margin:0 auto">
-      <div class="reveal card hover-card" style="--i:0"><p style="color:var(--accent);font-size:12px;letter-spacing:0.2em;margin-bottom:8px">INVESTMENT ADVISORY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Helping investors identify opportunities aligned with their financial objectives, risk profile, and long-term vision.</p></div>
-      <div class="reveal card hover-card" style="--i:1"><p style="color:var(--accent);font-size:12px;letter-spacing:0.2em;margin-bottom:8px">OFF-PLAN OPPORTUNITIES</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Exclusive access to carefully selected developments positioned for future growth and capital appreciation.</p></div>
-      <div class="reveal card hover-card" style="--i:2"><p style="color:var(--accent);font-size:12px;letter-spacing:0.2em;margin-bottom:8px">LUXURY RESIDENTIAL</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Curated homes in Dubai's most sought-after communities for end-users and discerning investors.</p></div>
-      <div class="reveal card hover-card" style="--i:3"><p style="color:var(--accent);font-size:12px;letter-spacing:0.2em;margin-bottom:8px">PORTFOLIO DIVERSIFICATION</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Building balanced property portfolios designed to generate sustainable long-term returns.</p></div>
-      <div class="reveal card hover-card" style="--i:4"><p style="color:var(--accent);font-size:12px;letter-spacing:0.2em;margin-bottom:8px">PROPERTY MANAGEMENT</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Protecting and enhancing the value of your assets through seamless end-to-end management.</p></div>
-      <div class="reveal card hover-card" style="--i:5"><p style="color:var(--accent);font-size:12px;letter-spacing:0.2em;margin-bottom:8px">EXIT STRATEGY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Knowing when to invest is important. Knowing when to exit is equally valuable.</p></div>
-      <div class="reveal card hover-card" style="--i:6"><p style="color:var(--accent);font-size:12px;letter-spacing:0.2em;margin-bottom:8px">RENTAL YIELD OPTIMISATION</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Maximising recurring income through market analysis, pricing strategy, and tenant placement.</p></div>
-      <div class="reveal card hover-card" style="--i:7"><p style="color:var(--accent);font-size:12px;letter-spacing:0.2em;margin-bottom:8px">DEVELOPER ACCESS</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Priority access to Dubai's leading developers and carefully curated investment opportunities.</p></div>
-      <div class="reveal hover-card" style="background:var(--surface-elevated);border:1px solid var(--border-subtle);border-radius:16px;padding:24px;display:flex;align-items:center;justify-content:center;min-height:220px;text-align:center;--i:8"><p style="font-family:var(--font-playfair);font-style:italic;color:rgba(245,242,234,0.8);font-size:14px;line-height:1.7">&ldquo;Every extraordinary property holds the potential to transform lives and becomes the backdrop to cherished moments.&rdquo;</p></div>
+  <div class="cx">
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1200px;margin:0 auto">
+      <div class="r card lift" style="--d:0" data-d><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;margin-bottom:10px">INVESTMENT ADVISORY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.75">Helping investors identify opportunities aligned with their financial objectives, risk profile, and long-term vision.</p></div>
+      <div class="r card lift" style="--d:80" data-d><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;margin-bottom:10px">OFF-PLAN OPPORTUNITIES</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.75">Exclusive access to carefully selected developments positioned for future growth and capital appreciation.</p></div>
+      <div class="r card lift" style="--d:160" data-d><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;margin-bottom:10px">LUXURY RESIDENTIAL</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.75">Curated homes in Dubai's most sought-after communities for end-users and discerning investors.</p></div>
+      <div class="r card lift" style="--d:80" data-d><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;margin-bottom:10px">PORTFOLIO DIVERSIFICATION</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.75">Building balanced property portfolios designed to generate sustainable long-term returns.</p></div>
+      <div class="r card lift" style="--d:160" data-d><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;margin-bottom:10px">PROPERTY MANAGEMENT</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.75">Protecting and enhancing the value of your assets through seamless end-to-end management.</p></div>
+      <div class="r card lift" style="--d:240" data-d><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;margin-bottom:10px">EXIT STRATEGY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.75">Knowing when to invest is important. Knowing when to exit is equally valuable.</p></div>
+      <div class="r card lift" style="--d:160" data-d><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;margin-bottom:10px">RENTAL YIELD OPTIMISATION</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.75">Maximising recurring income through market analysis, pricing strategy, and tenant placement.</p></div>
+      <div class="r card lift" style="--d:240" data-d><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;margin-bottom:10px">DEVELOPER ACCESS</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.75">Priority access to Dubai's leading developers and carefully curated investment opportunities.</p></div>
+      <div class="r lift" style="background:var(--surface-elevated);border:1px solid var(--border-subtle);border-radius:16px;padding:28px;display:flex;align-items:center;justify-content:center;min-height:240px;text-align:center;--d:320" data-d><p style="font-family:var(--font-playfair);font-style:italic;color:rgba(245,242,234,0.7);font-size:15px;line-height:1.8">&ldquo;Every extraordinary property holds the potential to transform lives and becomes the backdrop to cherished moments.&rdquo;</p></div>
     </div>
   </div>
 </section>
 
-<!-- ===== BENEFITS (10-frame grid) ===== -->
-<section class="section-dark section-padding">
-  <div style="max-width:1152px;margin:0 auto">
-    <div class="reveal" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-      <span style="color:var(--accent);font-size:18px">&#9679;</span>
-      <h3 style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:20px">The Experience</h3>
+<!-- ═══════════════════════════════════════════ -->
+<!-- BENEFITS — Cream section with bento grid     -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="cream-section" style="padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="max-width:1200px;margin:0 auto">
+    <div class="r" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+      <span style="color:var(--accent);font-size:8px">&#9679;</span>
+      <h3 style="font-family:var(--font-playfair);font-style:italic;color:rgba(7,7,7,0.85);font-size:20px">The Experience</h3>
     </div>
-    <div class="divider-animated" style="margin-bottom:48px"></div>
+    <div style="height:1px;background:rgba(7,7,7,0.08);margin-bottom:48px"></div>
 
-    <div class="grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px">
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:3/4;transition-delay:0ms"><span>Photo 1</span></div>
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px">
+      <div class="rs ph" style="aspect-ratio:3/4;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08)"><span style="color:rgba(7,7,7,0.25)">Photo 1</span></div>
       <div style="display:flex;flex-direction:column;gap:16px">
-        <div class="reveal-scale" style="aspect-ratio:1.45/1;background:var(--surface);border:1px solid var(--border-subtle);border-radius:16px;overflow:hidden;display:flex;align-items:flex-end;padding:24px;position:relative;transition-delay:100ms">
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.85),transparent)"></div>
+        <div class="rs" style="aspect-ratio:1.45/1;background:rgba(7,7,7,0.04);border:1px solid rgba(7,7,7,0.08);border-radius:16px;overflow:hidden;display:flex;align-items:flex-end;padding:24px;position:relative;--d:100" data-d>
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.06),transparent)"></div>
           <div style="position:relative;z-index:1">
-            <p style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:20px;line-height:1.2">Your Vision</p>
+            <p style="font-family:var(--font-playfair);font-style:italic;color:rgba(7,7,7,0.85);font-size:20px;line-height:1.2">Your Vision</p>
             <p style="font-family:var(--font-playfair);font-style:italic;color:var(--accent);font-size:18px">Our Creativity</p>
           </div>
         </div>
-        <div class="reveal-scale photo-placeholder" style="aspect-ratio:1.45/1;transition-delay:200ms"><span>Design Dashboard</span></div>
+        <div class="rs ph" style="aspect-ratio:1.45/1;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08);--d:200" data-d><span style="color:rgba(7,7,7,0.25)">Design Dashboard</span></div>
       </div>
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:3/4;transition-delay:150ms"><span>Photo 2</span></div>
+      <div class="rs ph" style="aspect-ratio:3/4;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08);--d:150" data-d><span style="color:rgba(7,7,7,0.25)">Photo 2</span></div>
     </div>
 
-    <div class="stagger grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:1.45/1;--i:0"><span>Photo 3</span></div>
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:1.45/1;--i:1"><span>Photo 4</span></div>
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:1.45/1;--i:2"><span>Photo 5</span></div>
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:1.45/1;--i:3"><span>Photo 6</span></div>
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:1.45/1;--i:4"><span>Photo 7</span></div>
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:1.45/1;--i:5"><span>Photo 8</span></div>
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <div class="rs ph" style="aspect-ratio:1.45/1;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08);--d:0" data-d><span style="color:rgba(7,7,7,0.25)">Photo 3</span></div>
+      <div class="rs ph" style="aspect-ratio:1.45/1;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08);--d:80" data-d><span style="color:rgba(7,7,7,0.25)">Photo 4</span></div>
+      <div class="rs ph" style="aspect-ratio:1.45/1;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08);--d:160" data-d><span style="color:rgba(7,7,7,0.25)">Photo 5</span></div>
+      <div class="rs ph" style="aspect-ratio:1.45/1;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08);--d:240" data-d><span style="color:rgba(7,7,7,0.25)">Photo 6</span></div>
+      <div class="rs ph" style="aspect-ratio:1.45/1;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08);--d:320" data-d><span style="color:rgba(7,7,7,0.25)">Photo 7</span></div>
+      <div class="rs ph" style="aspect-ratio:1.45/1;background:rgba(7,7,7,0.04);border-color:rgba(7,7,7,0.08);--d:400" data-d><span style="color:rgba(7,7,7,0.25)">Photo 8</span></div>
     </div>
   </div>
 </section>
 
-<!-- ===== FEATURES (replaces Pricing) ===== -->
-<section class="section-dark section-padding">
-  <div style="max-width:1152px;margin:0 auto">
-    <div class="reveal" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-      <span style="color:var(--accent);font-size:18px">&#9679;</span>
+<!-- ═══════════════════════════════════════════ -->
+<!-- FEATURES — Dark                              -->
+<!-- ═══════════════════════════════════════════ -->
+<section style="background:var(--bg);padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="max-width:1200px;margin:0 auto">
+    <div class="r" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+      <span style="color:var(--accent);font-size:8px">&#9679;</span>
       <h3 style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:20px">Why Bloomingbird</h3>
     </div>
-    <div class="divider-animated" style="margin-bottom:48px"></div>
+    <div class="div-sweep" style="margin-bottom:56px"></div>
 
-    <div class="grid-3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;align-items:start">
-      <div class="reveal-left">
-        <div style="border-top:1px solid var(--border-subtle);padding-top:20px;margin-bottom:32px"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:8px">MARKET INTELLIGENCE</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Deep knowledge of Dubai's real estate landscape, pricing trends, and emerging opportunities.</p></div>
-        <div style="border-top:1px solid var(--border-subtle);padding-top:20px;margin-bottom:32px"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:8px">CURATED SELECTION</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Access to handpicked properties from Tier-1 developers and select boutique partners.</p></div>
-        <div style="border-top:1px solid var(--border-subtle);padding-top:20px"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:8px">END-TO-END SUPPORT</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">From discovery to acquisition to management — we handle every step with precision.</p></div>
+    <div class="g3" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:56px;align-items:start">
+      <div class="rl">
+        <div style="border-top:1px solid var(--border-strong);padding-top:24px;margin-bottom:36px"><p style="color:var(--accent);font-size:11px;letter-spacing:0.25em;margin-bottom:10px">MARKET INTELLIGENCE</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.8">Deep knowledge of Dubai's real estate landscape, pricing trends, and emerging opportunities.</p></div>
+        <div style="border-top:1px solid var(--border-strong);padding-top:24px;margin-bottom:36px"><p style="color:var(--accent);font-size:11px;letter-spacing:0.25em;margin-bottom:10px">CURATED SELECTION</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.8">Access to handpicked properties from Tier-1 developers and select boutique partners.</p></div>
+        <div style="border-top:1px solid var(--border-strong);padding-top:24px"><p style="color:var(--accent);font-size:11px;letter-spacing:0.25em;margin-bottom:10px">END-TO-END SUPPORT</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.8">From discovery to acquisition to management — we handle every step with precision.</p></div>
       </div>
-      <div class="reveal-scale photo-placeholder" style="aspect-ratio:3/4"><span>Feature Photo</span></div>
-      <div class="reveal-right">
-        <div style="border-top:1px solid var(--border-subtle);padding-top:20px;margin-bottom:32px"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:8px">TRANSPARENT ADVISORY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Honest guidance with no hidden agendas — your interests always come first.</p></div>
-        <div style="border-top:1px solid var(--border-subtle);padding-top:20px;margin-bottom:32px"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:8px">LONG-TERM RELATIONSHIPS</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">We don't close deals, we build partnerships that grow with your portfolio.</p></div>
-        <div style="border-top:1px solid var(--border-subtle);padding-top:20px"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:8px">PROVEN TRACK RECORD</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">AED 1B+ in transactions, 500+ properties, and a 95%+ client satisfaction rate.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== WHY DUBAI ===== -->
-<section class="section-dark section-padding">
-  <div style="max-width:1152px;margin:0 auto">
-    <p class="reveal eyebrow" style="color:var(--accent);margin-bottom:16px">WHY DUBAI WHY NOW</p>
-    <h2 class="reveal" style="font-size:clamp(22px,3vw,40px);font-family:var(--font-playfair);color:var(--cream);margin-bottom:12px;transition-delay:100ms">The world's most ambitious investment destination</h2>
-    <p class="reveal" style="color:var(--text-secondary);font-size:18px;margin-bottom:64px;transition-delay:200ms">Discover why investors choose Dubai</p>
-
-    <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:64px">
-      <div>
-        <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;margin-bottom:40px"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:12px">0% INCOME TAX</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Tax-efficient ownership with no personal income tax on property investments anywhere in Dubai.</p></div>
-        <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;margin-bottom:40px;transition-delay:100ms"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:12px">200+ NATIONALITIES</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">A truly global city with world-class infrastructure, a diverse community, and unmatched connectivity.</p></div>
-        <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;transition-delay:200ms"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:12px">HIGH RENTAL DEMAND</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Strong rental yields supported by long-term capital appreciation and consistent population growth.</p></div>
-      </div>
-      <div>
-        <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;margin-bottom:40px;transition-delay:50ms"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:12px">GOLDEN VISA</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Long-term UAE residency available through qualifying property investment, offering stability and freedom.</p></div>
-        <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;margin-bottom:40px;transition-delay:150ms"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:12px">POLITICAL STABILITY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">Government-backed economic growth within one of the world's most secure, business-friendly environments.</p></div>
-        <div class="reveal" style="border-top:1px solid var(--border-subtle);padding-top:24px;transition-delay:250ms"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:12px">GLOBAL CONNECTIVITY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.7">A gateway linking East and West, served by one of the world's busiest international airports.</p></div>
+      <div class="rs ph" style="aspect-ratio:3/4"><span>Feature Photo</span></div>
+      <div class="rr">
+        <div style="border-top:1px solid var(--border-strong);padding-top:24px;margin-bottom:36px"><p style="color:var(--accent);font-size:11px;letter-spacing:0.25em;margin-bottom:10px">TRANSPARENT ADVISORY</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.8">Honest guidance with no hidden agendas — your interests always come first.</p></div>
+        <div style="border-top:1px solid var(--border-strong);padding-top:24px;margin-bottom:36px"><p style="color:var(--accent);font-size:11px;letter-spacing:0.25em;margin-bottom:10px">LONG-TERM RELATIONSHIPS</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.8">We don't close deals, we build partnerships that grow with your portfolio.</p></div>
+        <div style="border-top:1px solid var(--border-strong);padding-top:24px"><p style="color:var(--accent);font-size:11px;letter-spacing:0.25em;margin-bottom:10px">PROVEN TRACK RECORD</p><p style="color:var(--text-secondary);font-size:14px;line-height:1.8">AED 1B+ in transactions, 500+ properties, and a 95%+ client satisfaction rate.</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== FOUNDER ===== -->
-<section class="section-dark section-padding">
-  <div style="max-width:1152px;margin:0 auto">
-    <div class="reveal" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-      <span style="color:var(--accent);font-size:18px">&#9679;</span>
+<!-- ═══════════════════════════════════════════ -->
+<!-- WHY DUBAI — Cream                            -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="cream-section" style="padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="max-width:1200px;margin:0 auto">
+    <p class="r eyebrow" style="color:var(--accent);margin-bottom:20px">WHY DUBAI WHY NOW</p>
+    <h2 class="r" style="font-size:clamp(26px,3.5vw,48px);font-family:var(--font-playfair);color:rgba(7,7,7,0.85);margin-bottom:14px;font-weight:400;--d:100" data-d>The world's most ambitious investment destination</h2>
+    <p class="r" style="color:rgba(7,7,7,0.5);font-size:18px;margin-bottom:72px;--d:200" data-d>Discover why investors choose Dubai</p>
+
+    <div class="g2" style="display:grid;grid-template-columns:1fr 1fr;gap:72px">
+      <div>
+        <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding-top:28px;margin-bottom:44px"><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:14px;font-weight:500">0% INCOME TAX</p><p style="color:rgba(7,7,7,0.55);font-size:15px;line-height:1.8">Tax-efficient ownership with no personal income tax on property investments anywhere in Dubai.</p></div>
+        <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding-top:28px;margin-bottom:44px;--d:100" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:14px;font-weight:500">200+ NATIONALITIES</p><p style="color:rgba(7,7,7,0.55);font-size:15px;line-height:1.8">A truly global city with world-class infrastructure, a diverse community, and unmatched connectivity.</p></div>
+        <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding-top:28px;--d:200" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:14px;font-weight:500">HIGH RENTAL DEMAND</p><p style="color:rgba(7,7,7,0.55);font-size:15px;line-height:1.8">Strong rental yields supported by long-term capital appreciation and consistent population growth.</p></div>
+      </div>
+      <div>
+        <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding-top:28px;margin-bottom:44px;--d:50" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:14px;font-weight:500">GOLDEN VISA</p><p style="color:rgba(7,7,7,0.55);font-size:15px;line-height:1.8">Long-term UAE residency available through qualifying property investment, offering stability and freedom.</p></div>
+        <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding-top:28px;margin-bottom:44px;--d:150" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:14px;font-weight:500">POLITICAL STABILITY</p><p style="color:rgba(7,7,7,0.55);font-size:15px;line-height:1.8">Government-backed economic growth within one of the world's most secure, business-friendly environments.</p></div>
+        <div class="r" style="border-top:2px solid rgba(7,7,7,0.06);padding-top:28px;--d:250" data-d><p style="color:var(--accent);font-size:12px;letter-spacing:0.25em;margin-bottom:14px;font-weight:500">GLOBAL CONNECTIVITY</p><p style="color:rgba(7,7,7,0.55);font-size:15px;line-height:1.8">A gateway linking East and West, served by one of the world's busiest international airports.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FOUNDER — Dark                               -->
+<!-- ═══════════════════════════════════════════ -->
+<section style="background:var(--bg);padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="max-width:1200px;margin:0 auto">
+    <div class="r" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+      <span style="color:var(--accent);font-size:8px">&#9679;</span>
       <h3 style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:20px">A Word From Our Founder</h3>
     </div>
-    <div class="divider-animated" style="margin-bottom:48px"></div>
+    <div class="div-sweep" style="margin-bottom:56px"></div>
 
-    <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start">
-      <div class="reveal-left photo-placeholder" style="aspect-ratio:3/4"><span>Founder Photo</span></div>
-      <div class="reveal-right">
-        <blockquote style="border-left:2px solid var(--accent);padding-left:24px;margin-bottom:24px">
-          <p id="typewriterText" style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:clamp(18px,2.2vw,24px);line-height:1.5;min-height:120px"></p>
+    <div class="g2" style="display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start">
+      <div class="rl ph" style="aspect-ratio:3/4"><span>Founder Photo</span></div>
+      <div class="rr">
+        <blockquote style="border-left:2px solid var(--accent);padding-left:28px;margin-bottom:32px">
+          <p id="twText" style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:clamp(18px,2.2vw,24px);line-height:1.5;min-height:120px"></p>
         </blockquote>
-        <div style="color:var(--text-secondary);font-size:14px;line-height:1.8;padding-top:16px">
-          <p style="margin-bottom:16px">When I started Bloomingbird, I wasn't focused on building the biggest real estate company in Dubai. I simply wanted to build one that people could genuinely trust.</p>
-          <p style="margin-bottom:16px">Having spent years understanding the market and working closely with clients, I realised that what people needed wasn't another salesperson. They needed honest advice, thoughtful guidance, and someone who genuinely understood their goals before recommending a property.</p>
-          <p style="margin-bottom:16px">As the company grew, I knew I couldn't build this vision alone. My brother, Harssh Guptaa, joined me, bringing the same values, commitment, and client-first mindset that Bloomingbird was built upon.</p>
-          <p style="margin-bottom:16px">Today, I'm incredibly proud of what we've built. Not just a real estate company, but a team that shares a common purpose: helping people make confident property decisions that create lasting value.</p>
+        <div style="color:var(--text-secondary);font-size:15px;line-height:2;padding-top:16px">
+          <p style="margin-bottom:20px">When I started Bloomingbird, I wasn't focused on building the biggest real estate company in Dubai. I simply wanted to build one that people could genuinely trust.</p>
+          <p style="margin-bottom:20px">Having spent years understanding the market and working closely with clients, I realised that what people needed wasn't another salesperson. They needed honest advice, thoughtful guidance, and someone who genuinely understood their goals before recommending a property.</p>
+          <p style="margin-bottom:20px">As the company grew, I knew I couldn't build this vision alone. My brother, Harssh Guptaa, joined me, bringing the same values, commitment, and client-first mindset that Bloomingbird was built upon.</p>
+          <p style="margin-bottom:20px">Today, I'm incredibly proud of what we've built. Not just a real estate company, but a team that shares a common purpose: helping people make confident property decisions that create lasting value.</p>
           <p>To every client, partner, and team member who has been part of this journey, thank you for your trust.</p>
         </div>
-        <div style="padding-top:24px;border-top:1px solid var(--border-subtle);margin-top:24px">
-          <p style="color:var(--accent);font-weight:500">Ankit Goyal</p>
-          <p style="color:var(--text-muted);font-size:14px">Founder and CEO</p>
+        <div style="padding-top:28px;border-top:1px solid var(--border-strong);margin-top:28px">
+          <p style="color:var(--accent);font-weight:500;font-size:16px">Ankit Goyal</p>
+          <p style="color:var(--text-muted);font-size:14px;margin-top:4px">Founder and CEO</p>
           <p style="color:var(--text-muted);font-size:14px">Bloomingbird Real Estate</p>
         </div>
       </div>
@@ -526,94 +454,103 @@ nav.scrolled{padding:12px clamp(20px,5vw,80px);backdrop-filter:blur(20px)}
   </div>
 </section>
 
-<!-- ===== TEAM ===== -->
-<section class="section-dark section-padding">
-  <div style="max-width:1152px;margin:0 auto">
-    <div class="reveal" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-      <span style="color:var(--accent);font-size:18px">&#9679;</span>
-      <h3 style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:20px">The People</h3>
+<!-- ═══════════════════════════════════════════ -->
+<!-- TEAM — Cream                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="cream-section" style="padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="max-width:1200px;margin:0 auto">
+    <div class="r" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+      <span style="color:var(--accent);font-size:8px">&#9679;</span>
+      <h3 style="font-family:var(--font-playfair);font-style:italic;color:rgba(7,7,7,0.85);font-size:20px">The People</h3>
     </div>
-    <div class="divider-animated" style="margin-bottom:16px"></div>
-    <h2 class="reveal" style="font-size:clamp(22px,3vw,40px);font-family:var(--font-playfair);color:var(--cream);margin-bottom:12px">Our Team</h2>
-    <p class="reveal" style="color:var(--text-secondary);margin-bottom:64px;transition-delay:100ms">Behind every recommendation is a relationship.</p>
+    <div style="height:1px;background:rgba(7,7,7,0.08);margin-bottom:16px"></div>
+    <h2 class="r" style="font-size:clamp(26px,3.5vw,48px);font-family:var(--font-playfair);color:rgba(7,7,7,0.85);margin-bottom:14px;font-weight:400">Our Team</h2>
+    <p class="r" style="color:rgba(7,7,7,0.5);margin-bottom:72px;--d:100" data-d>Behind every recommendation is a relationship.</p>
 
-    <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
-      <div class="reveal-scale hover-card" style="aspect-ratio:4/5;background:var(--surface);border-radius:16px;border:1px solid var(--border-subtle);display:flex;align-items:flex-end;padding:24px;position:relative;overflow:hidden">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.9),rgba(7,7,7,0.3),transparent);z-index:1"></div>
-        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px">Founder &amp; CEO</p><p style="color:var(--cream);font-size:20px;font-family:var(--font-playfair);margin-bottom:8px">Ankith Goyal</p><p style="color:var(--text-secondary);font-size:12px;line-height:1.6">The visionary behind Bloomingbird Real Estate, leading with trust, transparency, and long-term client relationships.</p></div>
+    <div class="g2" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
+      <div class="rs lift" style="aspect-ratio:4/5;background:rgba(7,7,7,0.04);border-radius:16px;border:1px solid rgba(7,7,7,0.08);display:flex;align-items:flex-end;padding:28px;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.08),transparent 50%);z-index:1"></div>
+        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px">Founder &amp; CEO</p><p style="color:rgba(7,7,7,0.85);font-size:22px;font-family:var(--font-playfair);margin-bottom:10px">Ankith Goyal</p><p style="color:rgba(7,7,7,0.5);font-size:13px;line-height:1.7">The visionary behind Bloomingbird Real Estate, leading with trust, transparency, and long-term client relationships.</p></div>
       </div>
-      <div class="reveal-scale hover-card" style="aspect-ratio:4/5;background:var(--surface);border-radius:16px;border:1px solid var(--border-subtle);display:flex;align-items:flex-end;padding:24px;position:relative;overflow:hidden;transition-delay:150ms">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.9),rgba(7,7,7,0.3),transparent);z-index:1"></div>
-        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px">Associate Director</p><p style="color:var(--cream);font-size:20px;font-family:var(--font-playfair);margin-bottom:8px">Harssh Guptaa</p><p style="color:var(--text-secondary);font-size:12px;line-height:1.6">Supporting business development and client relations with a practical, results-driven approach.</p></div>
+      <div class="rs lift" style="aspect-ratio:4/5;background:rgba(7,7,7,0.04);border-radius:16px;border:1px solid rgba(7,7,7,0.08);display:flex;align-items:flex-end;padding:28px;position:relative;overflow:hidden;--d:150" data-d>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.08),transparent 50%);z-index:1"></div>
+        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px">Associate Director</p><p style="color:rgba(7,7,7,0.85);font-size:22px;font-family:var(--font-playfair);margin-bottom:10px">Harssh Guptaa</p><p style="color:rgba(7,7,7,0.5);font-size:13px;line-height:1.7">Supporting business development and client relations with a practical, results-driven approach.</p></div>
       </div>
     </div>
-    <div class="stagger grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
-      <div class="reveal-scale hover-card" style="aspect-ratio:3/4;background:var(--surface);border-radius:16px;border:1px solid var(--border-subtle);display:flex;align-items:flex-end;padding:24px;position:relative;overflow:hidden;--i:0">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.9),rgba(7,7,7,0.3),transparent);z-index:1"></div>
-        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px">Creative &amp; Marketing Head</p><p style="color:var(--cream);font-size:18px;font-family:var(--font-playfair);margin-bottom:8px">Soumya Suzzane</p><p style="color:var(--text-secondary);font-size:12px;line-height:1.6">Leading creative direction and marketing strategy.</p></div>
+    <div class="g3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      <div class="rs lift" style="aspect-ratio:3/4;background:rgba(7,7,7,0.04);border-radius:16px;border:1px solid rgba(7,7,7,0.08);display:flex;align-items:flex-end;padding:28px;position:relative;overflow:hidden;--d:0" data-d>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.08),transparent 50%);z-index:1"></div>
+        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px">Creative &amp; Marketing Head</p><p style="color:rgba(7,7,7,0.85);font-size:18px;font-family:var(--font-playfair);margin-bottom:10px">Soumya Suzzane</p><p style="color:rgba(7,7,7,0.5);font-size:12px;line-height:1.7">Leading creative direction and marketing strategy.</p></div>
       </div>
-      <div class="reveal-scale hover-card" style="aspect-ratio:3/4;background:var(--surface);border-radius:16px;border:1px solid var(--border-subtle);display:flex;align-items:flex-end;padding:24px;position:relative;overflow:hidden;--i:1">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.9),rgba(7,7,7,0.3),transparent);z-index:1"></div>
-        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px">Co-Founder</p><p style="color:var(--cream);font-size:18px;font-family:var(--font-playfair);margin-bottom:8px">Murti Purohit</p><p style="color:var(--text-secondary);font-size:12px;line-height:1.6">Contributing to foundation and growth through strategic support.</p></div>
+      <div class="rs lift" style="aspect-ratio:3/4;background:rgba(7,7,7,0.04);border-radius:16px;border:1px solid rgba(7,7,7,0.08);display:flex;align-items:flex-end;padding:28px;position:relative;overflow:hidden;--d:100" data-d>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.08),transparent 50%);z-index:1"></div>
+        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px">Co-Founder</p><p style="color:rgba(7,7,7,0.85);font-size:18px;font-family:var(--font-playfair);margin-bottom:10px">Murti Purohit</p><p style="color:rgba(7,7,7,0.5);font-size:12px;line-height:1.7">Contributing to foundation and growth through strategic support.</p></div>
       </div>
-      <div class="reveal-scale hover-card" style="aspect-ratio:3/4;background:var(--surface);border-radius:16px;border:1px solid var(--border-subtle);display:flex;align-items:flex-end;padding:24px;position:relative;overflow:hidden;--i:2">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.9),rgba(7,7,7,0.3),transparent);z-index:1"></div>
-        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px">Director</p><p style="color:var(--cream);font-size:18px;font-family:var(--font-playfair);margin-bottom:8px">Sudha Gupta</p><p style="color:var(--text-secondary);font-size:12px;line-height:1.6">Supporting client relations and operational coordination.</p></div>
+      <div class="rs lift" style="aspect-ratio:3/4;background:rgba(7,7,7,0.04);border-radius:16px;border:1px solid rgba(7,7,7,0.08);display:flex;align-items:flex-end;padding:28px;position:relative;overflow:hidden;--d:200" data-d>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,7,0.08),transparent 50%);z-index:1"></div>
+        <div style="position:relative;z-index:2"><p style="color:var(--accent);font-size:11px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px">Director</p><p style="color:rgba(7,7,7,0.85);font-size:18px;font-family:var(--font-playfair);margin-bottom:10px">Sudha Gupta</p><p style="color:rgba(7,7,7,0.5);font-size:12px;line-height:1.7">Supporting client relations and operational coordination.</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== NETWORK ===== -->
-<section class="section-dark section-padding">
-  <div style="max-width:1152px;margin:0 auto">
-    <div class="reveal" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-      <span style="color:var(--accent);font-size:18px">&#9679;</span>
+<!-- ═══════════════════════════════════════════ -->
+<!-- NETWORK — Dark                               -->
+<!-- ═══════════════════════════════════════════ -->
+<section style="background:var(--bg);padding:clamp(80px,12vw,160px) 0">
+  <div class="cx" style="max-width:1200px;margin:0 auto">
+    <div class="r" style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+      <span style="color:var(--accent);font-size:8px">&#9679;</span>
       <h3 style="font-family:var(--font-playfair);font-style:italic;color:var(--cream);font-size:20px">Our Network</h3>
     </div>
-    <div class="divider-animated" style="margin-bottom:16px"></div>
-    <h2 class="reveal" style="font-size:clamp(22px,3vw,40px);font-family:var(--font-playfair);color:var(--cream);margin-bottom:12px">&ldquo;Access matters. Relationships matter more.&rdquo;</h2>
-    <p class="reveal" style="color:var(--text-secondary);font-size:16px;line-height:1.8;max-width:720px;margin-bottom:64px;transition-delay:100ms">Despite Dubai having thousands of developers, we intentionally partner only with reputed Tier-1 developers.</p>
-    <div class="stagger grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      <div class="reveal-scale photo-placeholder hover-card" style="aspect-ratio:16/9;--i:0"><span>Developer Partner 1</span></div>
-      <div class="reveal-scale photo-placeholder hover-card" style="aspect-ratio:16/9;--i:1"><span>Developer Partner 2</span></div>
-      <div class="reveal-scale photo-placeholder hover-card" style="aspect-ratio:16/9;--i:2"><span>Developer Partner 3</span></div>
-      <div class="reveal-scale photo-placeholder hover-card" style="aspect-ratio:16/9;--i:3"><span>Developer Partner 4</span></div>
+    <div class="div-sweep" style="margin-bottom:16px"></div>
+    <h2 class="r" style="font-size:clamp(26px,3.5vw,48px);font-family:var(--font-playfair);color:var(--cream);margin-bottom:14px;font-weight:400">&ldquo;Access matters. Relationships matter more.&rdquo;</h2>
+    <p class="r" style="color:var(--text-secondary);font-size:16px;line-height:1.9;max-width:720px;margin-bottom:72px;--d:100" data-d>Despite Dubai having thousands of developers, we intentionally partner only with reputed Tier-1 developers.</p>
+    <div class="g2" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="rs ph lift" style="aspect-ratio:16/9;--d:0" data-d><span>Developer Partner 1</span></div>
+      <div class="rs ph lift" style="aspect-ratio:16/9;--d:100" data-d><span>Developer Partner 2</span></div>
+      <div class="rs ph lift" style="aspect-ratio:16/9;--d:200" data-d><span>Developer Partner 3</span></div>
+      <div class="rs ph lift" style="aspect-ratio:16/9;--d:300" data-d><span>Developer Partner 4</span></div>
     </div>
   </div>
 </section>
 
-<!-- ===== LEGACY ===== -->
-<section class="section-dark section-padding">
-  <div style="max-width:1000px;margin:0 auto;text-align:center">
-    <h2 class="reveal-blur" style="font-size:clamp(28px,5vw,64px);font-family:var(--font-playfair);color:var(--cream);margin-bottom:48px">Let's build your legacy</h2>
+<!-- ═══════════════════════════════════════════ -->
+<!-- LEGACY — Cinematic full-bleed closing        -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="cinematic-short" style="min-height:80vh;background:linear-gradient(180deg,#0a0a0a 0%,#111 40%,#0a0a0a 100%);display:flex;align-items:center;justify-content:center">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(201,144,91,0.04),transparent 60%)"></div>
+  <div class="cx" style="position:relative;z-index:10;text-align:center;max-width:900px;margin:0 auto;padding:120px 0">
+    <h2 class="rb" style="font-size:clamp(32px,6vw,72px);font-family:var(--font-playfair);color:var(--cream);margin-bottom:56px;font-weight:400;line-height:1.1">Let's build your legacy</h2>
 
-    <div class="reveal" style="margin-bottom:64px;transition-delay:200ms">
-      <p style="font-size:clamp(28px,4vw,52px);font-family:var(--font-playfair);color:var(--cream);line-height:1.2">The right property</p>
+    <div class="r" style="margin-bottom:72px;--d:200" data-d>
+      <p style="font-size:clamp(28px,4.5vw,56px);font-family:var(--font-playfair);color:var(--cream);line-height:1.15">The right property</p>
       <p style="font-size:clamp(18px,2.5vw,32px);color:var(--text-secondary);font-family:var(--font-playfair);font-style:italic">can change your portfolio</p>
-      <p style="font-size:clamp(28px,4vw,52px);font-family:var(--font-playfair);color:var(--cream);line-height:1.2;margin-top:24px">The right advisor</p>
+      <p style="font-size:clamp(28px,4.5vw,56px);font-family:var(--font-playfair);color:var(--cream);line-height:1.15;margin-top:28px">The right advisor</p>
       <p style="font-size:clamp(18px,2.5vw,32px);color:var(--text-secondary);font-family:var(--font-playfair);font-style:italic">can change your future.</p>
     </div>
 
-    <p class="reveal" style="color:var(--text-secondary);font-size:16px;line-height:1.8;max-width:640px;margin:0 auto 48px;transition-delay:400ms">Whether you're making your first investment, expanding your portfolio, or searching for a place to call home, we are here to guide every decision with clarity, confidence and long-term perspective.</p>
-    <p class="reveal-blur" style="font-family:var(--font-playfair);font-style:italic;color:var(--accent);font-size:20px;transition-delay:600ms">&ldquo;Let's build something that lasts.&rdquo;</p>
+    <p class="r" style="color:var(--text-secondary);font-size:17px;line-height:1.9;max-width:640px;margin:0 auto 56px;--d:400" data-d>Whether you're making your first investment, expanding your portfolio, or searching for a place to call home, we are here to guide every decision with clarity, confidence and long-term perspective.</p>
+    <p class="rb" style="font-family:var(--font-playfair);font-style:italic;color:var(--accent);font-size:22px;--d:600" data-d>&ldquo;Let's build something that lasts.&rdquo;</p>
   </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
-<footer style="background:var(--bg);border-top:1px solid var(--border-subtle)">
-  <div class="section-padding" style="max-width:1152px;margin:0 auto">
-    <div class="grid-3 stack-mobile" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px">
+<!-- ═══════════════════════════════════════════ -->
+<!-- FOOTER                                       -->
+<!-- ═══════════════════════════════════════════ -->
+<footer style="background:var(--bg);border-top:1px solid var(--border-subtle);padding:clamp(60px,8vw,100px) 0">
+  <div class="cx" style="max-width:1200px;margin:0 auto">
+    <div class="g3 stack-m" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px">
       <div>
-        <p style="font-family:var(--font-playfair);color:var(--accent);font-size:24px;margin-bottom:8px">Bloomingbird</p>
-        <p style="color:var(--text-muted);font-size:14px">Real Estate</p>
+        <p style="font-family:var(--font-playfair);color:var(--accent);font-size:28px;margin-bottom:8px;font-style:italic">Bloomingbird</p>
+        <p style="color:var(--text-muted);font-size:13px;letter-spacing:0.1em">Real Estate</p>
       </div>
-      <div style="font-size:14px;color:var(--text-secondary);line-height:2.2">
+      <div style="font-size:14px;color:var(--text-secondary);line-height:2.4">
         <p>Dubai, UAE</p>
         <a href="#" style="display:block;transition:color 0.3s" onmouseover="this.style.color='#C9905B'" onmouseout="this.style.color=''">www.bloomingbirdrealestate.ae</a>
         <a href="#" style="display:block;transition:color 0.3s" onmouseover="this.style.color='#C9905B'" onmouseout="this.style.color=''">admin@bloomingbirdre.ae</a>
       </div>
-      <div style="font-size:14px;color:var(--text-secondary);line-height:2.2;text-align:right">
+      <div style="font-size:14px;color:var(--text-secondary);line-height:2.4;text-align:right">
         <a href="#" style="display:block;transition:color 0.3s" onmouseover="this.style.color='#C9905B'" onmouseout="this.style.color=''">+971 56 559 9600</a>
         <a href="#" style="display:block;transition:color 0.3s" onmouseover="this.style.color='#C9905B'" onmouseout="this.style.color=''">+971 50 425 6348</a>
       </div>
@@ -621,82 +558,48 @@ nav.scrolled{padding:12px clamp(20px,5vw,80px);backdrop-filter:blur(20px)}
     <div style="height:1px;background:var(--border-subtle);margin:48px 0"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;color:var(--text-muted);font-size:12px;flex-wrap:wrap;gap:16px">
       <p>&copy; 2026 Bloomingbird Real Estate. All rights reserved.</p>
-      <p style="font-family:var(--font-space-mono)">Dubai, United Arab Emirates</p>
+      <p style="font-family:var(--font-mono);letter-spacing:0.1em">Dubai, United Arab Emirates</p>
     </div>
   </div>
 </footer>
 
-<!-- ===== SCRIPTS ===== -->
 <script>
-// Scroll progress bar
-const progressBar = document.getElementById('scrollProgress');
-window.addEventListener('scroll', () => {
-  const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-  progressBar.style.transform = `scaleX(${scrolled})`;
+// Scroll progress
+const sp=document.getElementById('sp');
+window.addEventListener('scroll',()=>{sp.style.transform=`scaleX(${window.scrollY/(document.body.scrollHeight-window.innerHeight)})`});
+
+// Navbar
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>80)});
+
+// Reveal observer
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');obs.unobserve(e.target)}})
+},{threshold:0.1,rootMargin:'0px 0px -60px 0px'});
+
+document.querySelectorAll('.r,.rl,.rr,.rs,.rb,.div-sweep').forEach(el=>{
+  if(el.dataset.d!==undefined){
+    const d=getComputedStyle(el).getPropertyValue('--d');
+    if(d)el.style.transitionDelay=d.trim()+'ms';
+  }
+  obs.observe(el);
 });
 
-// Navbar shrink on scroll
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 100);
-});
-
-// Reveal on scroll with IntersectionObserver
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('active');
-      revealObserver.unobserve(entry.target);
+// Typewriter
+const twTxt="Our vision extends beyond transactions. We strive to build meaningful relationships, deliver exceptional experiences, and create lasting value for every client we serve.";
+const twEl=document.getElementById('twText');
+let twDone=false;
+const twObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting&&!twDone){
+      twDone=true;let i=0;
+      const cur=document.createElement('span');cur.className='tw-cursor';cur.textContent='|';
+      (function t(){if(i<twTxt.length){twEl.textContent=twTxt.slice(0,++i);twEl.appendChild(cur);setTimeout(t,22+Math.random()*18)}})();
+      twObs.unobserve(e.target);
     }
   });
-}, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
-
-document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-blur, .divider-animated').forEach(el => {
-  revealObserver.observe(el);
-});
-
-// Typewriter effect for founder quote
-const typewriterText = "Our vision extends beyond transactions. We strive to build meaningful relationships, deliver exceptional experiences, and create lasting value for every client we serve.";
-const typewriterEl = document.getElementById('typewriterText');
-let typewriterStarted = false;
-
-const typewriterObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && !typewriterStarted) {
-      typewriterStarted = true;
-      let i = 0;
-      const cursor = document.createElement('span');
-      cursor.className = 'typewriter-cursor';
-      cursor.textContent = '|';
-
-      function type() {
-        if (i < typewriterText.length) {
-          typewriterEl.textContent = typewriterText.slice(0, i + 1);
-          typewriterEl.appendChild(cursor);
-          i++;
-          setTimeout(type, 25 + Math.random() * 15);
-        }
-      }
-      type();
-      typewriterObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.3 });
-
-typewriterObserver.observe(typewriterEl);
-
-// Smooth parallax on cinematic sections
-document.querySelectorAll('.cinematic-section').forEach(section => {
-  window.addEventListener('scroll', () => {
-    const rect = section.getBoundingClientRect();
-    const speed = 0.3;
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      const offset = (rect.top / window.innerHeight) * 100 * speed;
-      section.style.backgroundPositionY = `${offset}px`;
-    }
-  });
-});
+},{threshold:0.3});
+twObs.observe(twEl);
 </script>
-
 </body>
 </html>
