@@ -56,7 +56,7 @@ Extract key information from user request:
 - **Product type**: Entertainment (social, video, music, gaming), Tool (scanner, editor, converter), Productivity (task manager, notes, calendar), or hybrid
 - **Target audience**: C-end consumer users; consider age group, usage context (commute, leisure, work)
 - **Style keywords**: playful, vibrant, minimal, dark mode, content-first, immersive, etc.
-- **Stack**: React Native (this project's only tech stack)
+- **Stack**: Match the project's framework (see Available Stacks below)
 
 ### Step 2: Generate Design System (REQUIRED)
 
@@ -167,8 +167,28 @@ python3 skills/ui-ux-pro-max/scripts/search.py "<keyword>" --stack <stack>
 
 | Stack | Focus |
 |-------|-------|
+| `react` | Components, hooks, render performance |
+| `nextjs` | App Router, RSC, Server Actions, rendering |
+| `vue` | Components, Composition API, reactivity |
+| `nuxtjs` | Nuxt app patterns, SSR data fetching |
+| `nuxt-ui` | Nuxt UI component patterns |
+| `svelte` | Components, stores, transitions |
+| `astro` | Islands, content, partial hydration |
+| `angular` | Components, signals, services |
+| `shadcn` | shadcn/ui primitives, composition |
+| `html-tailwind` | Tailwind utility patterns |
+| `laravel` | Blade / server-rendered UI patterns |
+| `swiftui` | Views, state, navigation (iOS/macOS) |
 | `react-native` | Components, Navigation, Lists |
+| `flutter` | Widgets, state, navigation |
+| `jetpack-compose` | Composables, state, navigation (Android) |
+| `threejs` | 3D scenes, materials, performance |
 | `javafx` | Enterprise desktop apps, AtlantaFX themes, FXML, CSS, Controls, Binding, Threading, Packaging |
+| `wpf` | WPF desktop apps, XAML, MVVM, bindings, controls, styling |
+| `winui` | WinUI 3 apps, x:Bind, MVVM, Fluent Design, controls |
+| `uwp` | UWP apps, x:Bind, Fluent Design, adaptive layout |
+| `avalonia` | Cross-platform XAML desktop apps (Avalonia UI) |
+| `uno` | Cross-platform WinUI apps (Uno Platform) |
 
 **JavaFX enterprise examples:**
 
@@ -187,7 +207,7 @@ python3 skills/ui-ux-pro-max/scripts/search.py "enterprise tableview density per
 - Product type: Tool (AI search engine)
 - Target audience: C-end users looking for fast, intelligent search
 - Style keywords: modern, minimal, content-first, dark mode
-- Stack: React Native
+- Stack: Next.js (a homepage is a web surface; use a web `--stack`)
 
 ### Step 2: Generate Design System (REQUIRED)
 
@@ -210,7 +230,7 @@ python3 skills/ui-ux-pro-max/scripts/search.py "search loading animation" --doma
 ### Step 4: Stack Guidelines
 
 ```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "list performance navigation" --stack react-native
+python3 skills/ui-ux-pro-max/scripts/search.py "list performance navigation" --stack nextjs
 ```
 
 **Then:** Synthesize design system + detailed searches and implement the design.
