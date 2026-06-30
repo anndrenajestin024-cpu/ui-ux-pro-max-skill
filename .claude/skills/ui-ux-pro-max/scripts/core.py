@@ -69,6 +69,11 @@ CSV_CONFIG = {
         "file": "google-fonts.csv",
         "search_cols": ["Family", "Category", "Stroke", "Classifications", "Keywords", "Subsets", "Designers"],
         "output_cols": ["Family", "Category", "Stroke", "Classifications", "Styles", "Variable Axes", "Subsets", "Designers", "Popularity Rank", "Google Fonts URL"]
+    },
+    "video": {
+        "file": "video.csv",
+        "search_cols": ["Category", "Keywords", "Component", "Best For", "Library Recommendation"],
+        "output_cols": ["Category", "Component", "Best For", "Implementation", "Do", "Don't", "Library Recommendation", "Accessibility Notes"]
     }
 }
 
@@ -89,6 +94,12 @@ STACK_CONFIG = {
     "threejs":          {"file": "stacks/threejs.csv"},
     "angular":          {"file": "stacks/angular.csv"},
     "laravel":          {"file": "stacks/laravel.csv"},
+    "javafx":           {"file": "stacks/javafx.csv"},
+    "wpf":              {"file": "stacks/wpf.csv"},
+    "winui":            {"file": "stacks/winui.csv"},
+    "avalonia":         {"file": "stacks/avalonia.csv"},
+    "uno":              {"file": "stacks/uno.csv"},
+    "uwp":              {"file": "stacks/uwp.csv"},
 }
 
 # Common columns for all stacks
@@ -117,7 +128,7 @@ class BM25:
     def tokenize(self, text):
         """Lowercase, split, remove punctuation, filter short words"""
         text = re.sub(r'[^\w\s]', ' ', str(text).lower())
-        return [w for w in text.split() if len(w) > 2]
+        return [w for w in text.split() if len(w) >= 2]
 
     def fit(self, documents):
         """Build BM25 index from documents"""
