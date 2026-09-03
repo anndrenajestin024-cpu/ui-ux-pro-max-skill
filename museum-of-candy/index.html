@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>The Candy Passport — 15 Stamps. 15 Stories.</title>
+<meta name="description" content="A proposed digital layer for the Museum of Candy Dubai visitor passport: 15 rooms, 15 missions, one shareable Candy Story. Concept prototype.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FFFEFB'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23FF2D85' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23FF2D85'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;800&display=swap">
+<style>
+/* =============================================================== tokens */
+:root{
+  --pink:#FF2D85;
+  --pink-deep:#D1055F;      /* the pink, dark enough to set text in */
+  --ink:#121212;
+  --ink-60:#5C5A57;
+  --ink-40:#8E8B86;
+  --paper:#FFFEFB;
+  --warm:#F5F0EB;
+  --yellow:#FFD93D;
+  --yellow-deep:#8A6200;
+  --blue:#2EC5FF;
+  --blue-deep:#046A93;
+  --rule:#E3DCD3;
+  --rule-soft:#EFE9E1;
+
+  /* the mood writes these two, and nothing else */
+  --accent:var(--pink);
+  --accent-deep:var(--pink-deep);
+
+  --pad:clamp(20px,5vw,64px);
+  --maxw:1180px;
+  --r:3px;                  /* restrained corners: this is paper, not a card UI */
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --ease-io:cubic-bezier(.65,0,.35,1);
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --display:'Poppins','Inter',system-ui,-apple-system,'Segoe UI Black',sans-serif;
+}
+[data-mood="chill"]   { --accent:var(--blue);   --accent-deep:var(--blue-deep); }
+[data-mood="chaotic"] { --accent:var(--yellow); --accent-deep:var(--yellow-deep); }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--warm); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.55; font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  /* the paper the whole thing is printed on */
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(255,255,255,.9), transparent 42%),
+    radial-gradient(circle at 84% 78%, rgba(255,255,255,.7), transparent 38%);
+}
+img,svg{ display:block; max-width:100%; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+a{ color:inherit; }
+:focus-visible{ outline:2.5px solid var(--accent-deep); outline-offset:3px; border-radius:2px; }
+::selection{ background:var(--accent); color:#fff; }
+
+/* =============================================================== type */
+.display{ font-family:var(--display); font-weight:800; letter-spacing:-.028em; line-height:.92;
+  text-transform:uppercase; margin:0; overflow-wrap:break-word; }
+.h1{ font-size:clamp(38px,8.4vw,76px); }
+.h2{ font-size:clamp(30px,6.4vw,54px); }
+.h3{ font-size:clamp(24px,5vw,38px); }
+.kicker{ font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-60); margin:0; }
+.kicker b{ color:var(--accent-deep); font-weight:600; }
+.lede{ font-size:clamp(15px,1.9vw,19px); line-height:1.5; color:var(--ink-60); margin:0; max-width:38ch; }
+.small{ font-size:13px; line-height:1.5; color:var(--ink-60); margin:0; }
+.mono{ font-variant-numeric:tabular-nums; letter-spacing:.04em; }
+
+/* =============================================================== chrome */
+.shell{ max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+.topbar{
+  position:sticky; top:0; z-index:40;
+  background:rgba(255,254,251,.88); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule-soft);
+}
+.topbar-in{ max-width:var(--maxw); margin:0 auto; padding:11px var(--pad);
+  display:flex; align-items:center; gap:12px; }
+.mark{ display:flex; align-items:center; gap:9px; min-width:0; }
+.mark svg{ width:22px; height:22px; flex:0 0 auto; }
+.mark-tx{ display:flex; flex-direction:column; line-height:1.05; min-width:0; }
+.mark-tx b{ font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; white-space:nowrap; }
+.mark-tx i{ font-style:normal; font-size:9px; letter-spacing:.18em; color:var(--ink-40); text-transform:uppercase; }
+.tag{
+  font-size:9px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  border:1px solid var(--rule); padding:3px 7px; border-radius:100px; color:var(--ink-40);
+  white-space:nowrap;
+}
+.topbar .spacer{ flex:1 1 auto; }
+@media (max-width:600px){
+  .mark-tx i{ display:none; }
+  .topbar .tag{ display:none; }
+}
+.ghost{
+  font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-40); padding:7px 9px; border-radius:100px; min-height:34px;
+  transition:color .2s, background .2s;
+}
+.ghost{ white-space:nowrap; }
+.ghost:hover{ color:var(--ink); background:var(--warm); }
+
+/* =============================================================== screens */
+.screen{ display:none; padding:clamp(26px,5vh,54px) 0 clamp(50px,9vh,96px); }
+.screen.on{ display:block; animation:screen-in .5s var(--ease) both; }
+.screen h1, .screen h2{ scroll-margin-top:96px; }
+.screen h1:focus, .screen h2:focus{ outline:none; }
+@keyframes screen-in{ from{ opacity:0; transform:translate3d(0,14px,0); } to{ opacity:1; transform:none; } }
+
+/* =============================================================== buttons */
+.btn{
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:11px;
+  min-height:52px; padding:15px 26px; border-radius:100px;
+  font-size:13px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  background:var(--ink); color:var(--paper);
+  transition:transform .16s var(--ease), box-shadow .3s var(--ease), background .3s;
+  box-shadow:0 6px 18px -10px rgba(18,18,18,.7);
+}
+.btn:hover{ transform:translateY(-2px); box-shadow:0 12px 26px -12px rgba(18,18,18,.65); }
+.btn:active{ transform:translateY(1px) scale(.985); }
+.btn .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); }
+/* Ink on the accent, not white: white clears 4.5:1 on none of the three
+   moods — it is 2.1:1 on the blue — and ink clears it on all of them. */
+.btn--accent{ background:var(--accent); color:var(--ink); }
+.btn--accent .dot{ background:currentColor; opacity:.55; }
+.btn--quiet{ background:transparent; color:var(--ink); border:1px solid var(--rule); box-shadow:none; }
+.btn--quiet:hover{ background:var(--paper); border-color:var(--ink-40); }
+.btn[disabled]{ opacity:.42; pointer-events:none; }
+.btn-row{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+
+/* =============================================================== 01 intro */
+.intro{ display:grid; grid-template-columns:1fr; gap:clamp(30px,5vh,54px); align-items:center; }
+@media (min-width:900px){
+  .intro{ grid-template-columns:minmax(0,1fr) minmax(320px,.86fr); gap:clamp(40px,5vw,80px); }
+}
+.intro > *{ min-width:0; }
+.intro h1{ margin:16px 0 0; }
+/* Each line is one object. Left to wrap, "15" broke onto a line of its own at
+   the widths where the display size is at its largest. */
+.intro h1 span{ display:block; white-space:nowrap; }
+.intro h1 .line2{ color:var(--accent-deep); }
+.intro .lede{ margin-top:20px; }
+.intro .btn-row{ margin-top:30px; }
+.hint{ margin-top:18px; font-size:10px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-40); }
+.hint span{ display:inline-block; padding-right:10px; }
+
+/* ------------------------------------------------- the passport object */
+.pp-stage{ perspective:1000px; display:flex; justify-content:center; padding:8px 0; }
+.pp{
+  position:relative; width:min(320px,80vw); aspect-ratio:5/7;
+  transform-style:preserve-3d; will-change:transform;
+  transition:transform .5s var(--ease);
+}
+.pp-page{
+  position:absolute; inset:0; border-radius:var(--r) 8px 8px var(--r);
+  background:var(--paper); border:1px solid var(--rule);
+}
+.pp-page:nth-child(1){ transform:translate3d(5px,5px,-14px); }
+.pp-page:nth-child(2){ transform:translate3d(2.5px,2.5px,-7px); }
+.pp-cover{
+  position:absolute; inset:0; border-radius:var(--r) 8px 8px var(--r); overflow:hidden;
+  background:
+    linear-gradient(158deg, #1B1B1B 0%, #121212 46%, #060606 100%);
+  color:var(--paper);
+  box-shadow:0 26px 50px -26px rgba(18,18,18,.72), 0 2px 0 rgba(255,255,255,.06) inset;
+  display:flex; flex-direction:column; padding:clamp(18px,5%,26px);
+}
+/* the foil edge along the spine */
+.pp-cover::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:11px;
+  background:linear-gradient(90deg, rgba(255,255,255,.16), rgba(255,255,255,0) 70%);
+}
+.pp-cover::after{
+  content:''; position:absolute; inset:9px; border:1px solid rgba(255,255,255,.16); border-radius:2px;
+  pointer-events:none;
+}
+.pp-top{ position:relative; display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.pp-top b{ font-size:9px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; opacity:.72; }
+.pp-crest{ position:relative; margin:auto; width:min(112px,42%); }
+.pp-crest svg{ width:100%; height:auto; }
+.pp-foot{ position:relative; }
+.pp-foot .t{ font-family:var(--display); font-weight:800; font-size:clamp(19px,6.4%,26px);
+  letter-spacing:-.02em; text-transform:uppercase; line-height:1.02; }
+.pp-foot .s{ margin-top:7px; font-size:9px; letter-spacing:.2em; text-transform:uppercase; opacity:.6; }
+.pp-foot .band{ margin-top:13px; height:5px; border-radius:100px; background:var(--accent);
+  transition:background .4s var(--ease); }
+.pp-shadow{
+  position:absolute; left:6%; right:6%; bottom:-26px; height:26px; border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(18,18,18,.28), transparent 70%);
+  filter:blur(4px);
+}
+
+/* =============================================================== 02 mood */
+.mood-grid{ display:grid; gap:12px; margin-top:clamp(24px,4vh,40px); }
+@media (min-width:760px){ .mood-grid{ grid-template-columns:repeat(3,1fr); gap:16px; } }
+.mood{
+  position:relative; text-align:left; padding:22px; min-height:132px; border-radius:var(--r);
+  background:var(--paper); border:1px solid var(--rule); overflow:hidden;
+  display:flex; flex-direction:column; justify-content:space-between; gap:14px;
+  transition:transform .2s var(--ease), border-color .3s, box-shadow .3s;
+}
+.mood:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -20px rgba(18,18,18,.5); }
+.mood:active{ transform:translateY(0) scale(.99); }
+.mood .swatch{ width:34px; height:34px; border-radius:50%; transition:transform .35s var(--ease); }
+.mood[data-value="playful"] .swatch{ background:var(--pink); }
+.mood[data-value="chill"]   .swatch{ background:var(--blue); }
+.mood[data-value="chaotic"] .swatch{ background:var(--yellow); }
+.mood b{ font-family:var(--display); font-weight:800; font-size:clamp(24px,5.4vw,32px);
+  letter-spacing:-.02em; text-transform:uppercase; line-height:1; display:block; }
+.mood i{ font-style:normal; display:block; margin-top:6px; font-size:12.5px; color:var(--ink-60); }
+.mood[aria-pressed="true"]{ border-color:var(--ink); box-shadow:0 0 0 1px var(--ink); }
+.mood[aria-pressed="true"] .swatch{ transform:scale(1.22); }
+.mood .picked{
+  position:absolute; top:16px; right:16px; opacity:0; transform:scale(.7);
+  transition:opacity .3s var(--ease), transform .3s var(--ease);
+  font-size:9px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  background:var(--ink); color:var(--paper); padding:4px 8px; border-radius:100px;
+}
+.mood[aria-pressed="true"] .picked{ opacity:1; transform:none; }
+
+/* =============================================================== 03 passport */
+.pg-head{ display:flex; flex-wrap:wrap; gap:18px 26px; align-items:flex-end; justify-content:space-between;
+  padding-bottom:20px; border-bottom:1px solid var(--rule); }
+.progress-block{ text-align:left; }
+@media (min-width:640px){ .progress-block{ text-align:right; } }
+.progress-n{ font-family:var(--display); font-weight:800; font-size:clamp(34px,7vw,50px);
+  letter-spacing:-.03em; line-height:1; font-variant-numeric:tabular-nums; }
+.progress-n span{ color:var(--ink-40); }
+.progress-n .roll{ display:inline-block; }
+.progress-n .roll.tick{ animation:roll .5s var(--ease) both; }
+@keyframes roll{ 0%{ transform:translateY(-.5em); opacity:0; } 60%{ transform:translateY(.05em); opacity:1; } 100%{ transform:none; } }
+.pips{ display:flex; flex-wrap:wrap; gap:5px; margin-top:11px; }
+@media (min-width:640px){ .pips{ justify-content:flex-end; } }
+.pip{ width:13px; height:13px; border-radius:50%; border:1.5px solid var(--rule); }
+.pip.done{ background:var(--accent); border-color:var(--accent); }
+.pip.now{ border-color:var(--ink); animation:pip 1.9s var(--ease-io) infinite; }
+@keyframes pip{ 0%,100%{ box-shadow:0 0 0 0 rgba(18,18,18,.28); } 55%{ box-shadow:0 0 0 5px rgba(18,18,18,0); } }
+
+.missions{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:26px; }
+@media (min-width:620px){ .missions{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:11px; } }
+@media (min-width:980px){ .missions{ grid-template-columns:repeat(5,minmax(0,1fr)); } }
+.mission{
+  position:relative; text-align:left; padding:14px 13px 13px; border-radius:var(--r); min-height:118px;
+  background:var(--paper); border:1px solid var(--rule);
+  display:flex; flex-direction:column; gap:9px;
+  transition:transform .2s var(--ease), border-color .25s, box-shadow .3s, background .25s;
+}
+.mission .no{ font-size:10px; font-weight:600; letter-spacing:.16em; color:var(--ink-40); font-variant-numeric:tabular-nums; }
+.mission .nm{ font-family:var(--display); font-weight:600; font-size:14px; line-height:1.14;
+  letter-spacing:-.01em; text-transform:uppercase; }
+.mission .st{ margin-top:auto; font-size:9.5px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-40); }
+.mission .stamp-ico{ position:absolute; top:11px; right:11px; width:26px; height:26px; opacity:.16; }
+.mission[data-state="done"]{ background:var(--warm); }
+.mission[data-state="done"] .stamp-ico{ opacity:1; color:var(--accent-deep); }
+.mission[data-state="done"] .st{ color:var(--accent-deep); }
+.mission[data-state="open"]{ border-color:var(--ink); box-shadow:0 0 0 1px var(--ink); }
+.mission[data-state="open"] .st{ color:var(--ink); }
+.mission[data-state="open"]:hover{ transform:translateY(-3px); }
+.mission[data-state="locked"]{ color:var(--ink-40); background:transparent; border-style:dashed; cursor:default; }
+.mission[data-state="locked"] .nm{ color:var(--ink-40); }
+.mission .flag{
+  position:absolute; top:-7px; left:11px; font-size:8.5px; font-weight:600; letter-spacing:.14em;
+  text-transform:uppercase; background:var(--ink); color:var(--paper); padding:3px 7px; border-radius:100px;
+}
+.mission .flag.new{ background:var(--accent); color:var(--ink); }
+.note-line{ margin-top:20px; display:flex; gap:9px; align-items:flex-start;
+  font-size:11.5px; color:var(--ink-40); line-height:1.45; }
+.note-line svg{ flex:0 0 auto; margin-top:2px; }
+.note-line span{ max-width:86ch; }
+.note-line strong{ color:var(--ink-60); font-weight:600; }
+
+/* =============================================================== 04 mission */
+.ms-head{ display:flex; flex-wrap:wrap; gap:14px 22px; align-items:flex-start; justify-content:space-between; }
+.ms-head h2{ margin-top:10px; }
+.ms-head .h2 em{ font-style:normal; display:block; color:var(--accent-deep); }
+.tabs{ display:flex; gap:4px; margin-top:26px; border-bottom:1px solid var(--rule); }
+.tab{
+  position:relative; padding:12px 14px; min-height:46px;
+  font-size:11.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-40);
+  transition:color .25s;
+}
+.tab[aria-selected="true"]{ color:var(--ink); }
+.tab::after{
+  content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--accent);
+  transform:scaleX(0); transform-origin:left; transition:transform .35s var(--ease);
+}
+.tab[aria-selected="true"]::after{ transform:scaleX(1); }
+.panel{ display:none; padding-top:clamp(22px,4vh,34px); }
+.panel.on{ display:block; animation:screen-in .38s var(--ease) both; }
+.split{ display:grid; gap:24px; }
+@media (min-width:860px){ .split{ grid-template-columns:minmax(0,300px) minmax(0,1fr); gap:clamp(28px,4vw,52px); align-items:start; } }
+
+/* ------------------------------------------------- the viewfinder */
+.vf-wrap{ display:flex; justify-content:center; }
+.vf{ width:min(280px,74vw); }
+.vf svg{ width:100%; height:auto; }
+.vf-read{ display:flex; gap:6px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+.chip{
+  font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+  border:1px solid var(--rule); border-radius:100px; padding:6px 10px; color:var(--ink-60);
+  background:var(--paper); font-variant-numeric:tabular-nums;
+}
+.chip.hot{ border-color:var(--ink); color:var(--ink); }
+.verdict{
+  margin-top:22px; font-family:var(--display); font-weight:800; text-transform:uppercase;
+  font-size:clamp(26px,5.6vw,42px); letter-spacing:-.02em; line-height:1;
+  transition:color .3s;
+}
+.verdict[data-v="flat"]{ color:var(--ink-40); }
+.verdict[data-v="better"]{ color:var(--ink); }
+.verdict[data-v="target"]{ color:var(--accent-deep); }
+.verdict[data-v="low"]{ color:var(--ink-40); }
+.verdict-sub{ margin-top:8px; font-size:13.5px; color:var(--ink-60); max-width:34ch; min-height:3em; }
+.slider-block{ margin-top:26px; }
+.slider-lab{ display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+  font-size:10px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-40); }
+.slider-lab b{ color:var(--ink); font-variant-numeric:tabular-nums; }
+input[type="range"]{
+  -webkit-appearance:none; appearance:none; width:100%; margin:16px 0 0; height:34px;
+  background:transparent; cursor:grab; display:block;
+}
+input[type="range"]:active{ cursor:grabbing; }
+input[type="range"]::-webkit-slider-runnable-track{ height:3px; border-radius:100px;
+  background:linear-gradient(90deg, var(--rule), var(--ink-40)); }
+input[type="range"]::-moz-range-track{ height:3px; border-radius:100px;
+  background:linear-gradient(90deg, var(--rule), var(--ink-40)); }
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none; width:30px; height:30px; margin-top:-13.5px;
+  border-radius:50%; background:var(--paper); border:2px solid var(--ink);
+  box-shadow:0 3px 10px -4px rgba(18,18,18,.6);
+  transition:transform .16s var(--ease), border-color .25s;
+}
+input[type="range"]::-moz-range-thumb{
+  width:26px; height:26px; border-radius:50%; background:var(--paper); border:2px solid var(--ink);
+  box-shadow:0 3px 10px -4px rgba(18,18,18,.6);
+}
+input[type="range"]:hover::-webkit-slider-thumb{ transform:scale(1.08); }
+input[type="range"].at-target::-webkit-slider-thumb{ border-color:var(--accent); }
+input[type="range"].at-target::-moz-range-thumb{ border-color:var(--accent); }
+.ticks{ position:relative; height:16px; margin-top:2px; }
+.ticks span{ position:absolute; transform:translateX(-50%); font-size:9px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-40); white-space:nowrap; }
+.ticks .zone{ position:absolute; top:-19px; height:3px; background:var(--accent); opacity:.34; border-radius:100px; }
+.direction{ margin-top:26px; padding-top:20px; border-top:1px solid var(--rule); }
+.direction h4{ margin:0 0 12px; font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-40); }
+.dir-list{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.dir-list li{ display:flex; gap:11px; align-items:baseline; font-size:14px; }
+.dir-list b{ font-family:var(--display); font-weight:600; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent-deep); min-width:74px; flex:0 0 auto; }
+
+/* ------------------------------------------------- the reel timeline */
+.board{ background:var(--ink); border-radius:var(--r); overflow:hidden; color:var(--paper); }
+.board-frame{ position:relative; aspect-ratio:16/9; }
+.board-frame svg{ position:absolute; inset:0; width:100%; height:100%; }
+.board-cap{ display:flex; justify-content:space-between; gap:12px; padding:12px 14px;
+  border-top:1px solid rgba(255,255,255,.1); }
+.board-cap b{ font-family:var(--display); font-weight:600; font-size:12.5px; letter-spacing:.1em; text-transform:uppercase; }
+.board-cap span{ font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,254,251,.55);
+  font-variant-numeric:tabular-nums; }
+.tl{ margin-top:20px; }
+.tl-top{ display:flex; align-items:center; gap:14px; }
+.play{
+  width:46px; height:46px; flex:0 0 auto; border-radius:50%; background:var(--ink); color:var(--paper);
+  display:grid; place-items:center; transition:transform .16s var(--ease);
+}
+.play:hover{ transform:scale(1.06); }
+.play svg{ width:15px; height:15px; }
+.tl-time{ font-family:var(--display); font-weight:800; font-size:clamp(22px,4.4vw,30px);
+  letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.tl-time small{ font-size:.46em; font-weight:600; letter-spacing:.14em; color:var(--ink-40); margin-left:6px; }
+.track{
+  position:relative; margin-top:16px; height:52px; border-radius:var(--r);
+  background:var(--paper); border:1px solid var(--rule); overflow:hidden;
+  touch-action:none; cursor:ew-resize;
+}
+.seg{ position:absolute; top:0; bottom:0; border-right:1px solid var(--rule);
+  display:flex; align-items:center; padding:0 9px; overflow:hidden;
+  transition:background .3s, color .3s; }
+.seg:last-child{ border-right:0; }
+.seg b{ font-size:9.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-40); white-space:nowrap; transition:color .3s; }
+.seg.on{ background:var(--warm); }
+.seg.on b{ color:var(--ink); }
+.playhead{ position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--accent);
+  transform:translateX(-1px); pointer-events:none; }
+.playhead::after{
+  content:''; position:absolute; top:0; left:50%; width:13px; height:13px; border-radius:50%;
+  background:var(--accent); transform:translate(-50%,-50%);
+}
+.marks{ position:relative; height:18px; margin-top:6px; }
+.marks span{ position:absolute; transform:translateX(-50%); font-size:9.5px; letter-spacing:.1em;
+  color:var(--ink-40); font-variant-numeric:tabular-nums; }
+.beat{ margin-top:18px; padding-top:18px; border-top:1px solid var(--rule); }
+.beat .k{ font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-deep); }
+.beat h4{ font-family:var(--display); font-weight:800; text-transform:uppercase; letter-spacing:-.02em;
+  font-size:clamp(22px,4.6vw,32px); margin:7px 0 0; line-height:1; }
+.beat p{ margin:9px 0 0; font-size:14px; color:var(--ink-60); max-width:46ch; min-height:2.9em; }
+
+/* ------------------------------------------------- the story card */
+.story-wrap{ display:flex; justify-content:center; }
+.story{
+  width:min(310px,76vw); aspect-ratio:9/16; border-radius:6px; overflow:hidden; position:relative;
+  background:var(--ink); color:var(--paper);
+  padding:clamp(20px,6%,28px); display:flex; flex-direction:column;
+  box-shadow:0 26px 50px -28px rgba(18,18,18,.8);
+}
+.story::before{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(90% 55% at 78% 8%, color-mix(in srgb, var(--accent) 55%, transparent), transparent 62%),
+    repeating-linear-gradient(-38deg, rgba(255,255,255,.045) 0 2px, transparent 2px 9px);
+}
+.story > *{ position:relative; }
+.story-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+  font-size:9px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; opacity:.72; }
+.story-mid{ margin-top:auto; }
+.story-mid .k{ font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; opacity:.7; }
+.story-mid h3{ font-family:var(--display); font-weight:800; text-transform:uppercase;
+  letter-spacing:-.03em; line-height:.92; font-size:clamp(30px,10.6vw,44px); margin:12px 0 0; }
+.story-mid .sub{ font-family:var(--display); font-weight:600; font-size:15px; letter-spacing:.02em;
+  text-transform:uppercase; margin-top:11px; color:var(--accent); }
+[data-mood="chaotic"] .story-mid .sub{ color:var(--yellow); }
+.story-rule{ height:1px; background:rgba(255,255,255,.2); margin:18px 0 14px; }
+.story-foot{ display:flex; justify-content:space-between; align-items:flex-end; gap:12px;
+  font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; }
+.story-foot b{ font-weight:600; }
+.story-foot i{ font-style:normal; opacity:.6; }
+.story-stamp{ position:absolute; right:clamp(14px,5%,22px); top:clamp(58px,16%,96px); width:34%;
+  opacity:.9; transform:rotate(-11deg); color:var(--accent); }
+[data-mood="chaotic"] .story-stamp{ color:var(--yellow); }
+
+/* ------------------------------------------------- collect / stamping */
+.collect-bar{
+  margin-top:clamp(26px,5vh,42px); padding-top:22px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:14px 20px; align-items:center; justify-content:space-between;
+}
+.collect-bar .small{ max-width:42ch; }
+.stamp-zone{ position:relative; }
+#ink{
+  position:fixed; z-index:60; left:50%; top:50%; width:min(74vw,340px); aspect-ratio:1;
+  transform:translate(-50%,-50%) scale(0); border-radius:50%; pointer-events:none; opacity:0;
+  background:radial-gradient(circle, color-mix(in srgb, var(--accent) 82%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 30%, transparent) 46%, transparent 68%);
+  filter:blur(3px);
+}
+#ink.go{ animation:ink .9s var(--ease) forwards; }
+@keyframes ink{
+  0%{ transform:translate(-50%,-50%) scale(.1); opacity:0; }
+  16%{ opacity:.85; }
+  100%{ transform:translate(-50%,-50%) scale(2.5); opacity:0; }
+}
+#flyer{
+  position:fixed; z-index:61; left:50%; top:50%; width:min(58vw,230px); pointer-events:none;
+  opacity:0; color:var(--accent-deep);
+}
+#flyer.go{ animation:press 1s cubic-bezier(.3,1.4,.4,1) forwards; }
+@keyframes press{
+  0%{ opacity:0; transform:translate(-50%,-160%) scale(2.1) rotate(-22deg); }
+  30%{ opacity:1; }
+  56%{ transform:translate(-50%,-50%) scale(.9) rotate(-9deg); }
+  68%{ transform:translate(-50%,-50%) scale(1.04) rotate(-11deg); }
+  86%{ opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-11deg); }
+  100%{ opacity:0; transform:translate(-50%,-50%) scale(1) rotate(-11deg); }
+}
+.jolt{ animation:jolt .34s var(--ease); }
+@keyframes jolt{ 0%,100%{ transform:none; } 34%{ transform:translateY(4px); } 70%{ transform:translateY(-1px); } }
+.done-flag{
+  display:inline-flex; align-items:center; gap:9px; margin-top:18px; padding:9px 15px; border-radius:100px;
+  background:var(--ink); color:var(--paper);
+  font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  opacity:0; transform:translateY(8px); transition:opacity .4s var(--ease), transform .4s var(--ease);
+}
+.done-flag.on{ opacity:1; transform:none; }
+
+/* =============================================================== extensions + honesty */
+.extend{ margin-top:clamp(46px,8vh,86px); padding-top:clamp(28px,4vh,40px); border-top:1px solid var(--rule); }
+.ext-grid{ display:grid; gap:10px; margin-top:22px; }
+@media (min-width:700px){ .ext-grid{ grid-template-columns:repeat(4,1fr); gap:12px; } }
+.ext{ padding:18px 16px; border:1px solid var(--rule); border-radius:var(--r); background:var(--paper); }
+.ext b{ font-family:var(--display); font-weight:600; font-size:13px; letter-spacing:.06em;
+  text-transform:uppercase; display:block; }
+.ext p{ margin:8px 0 0; font-size:12.5px; color:var(--ink-60); line-height:1.45; }
+.credit{ margin-top:clamp(40px,7vh,72px); padding:24px 0 0; border-top:1px solid var(--rule);
+  display:grid; gap:20px; }
+@media (min-width:760px){ .credit{ grid-template-columns:1fr 1fr; gap:44px; } }
+.credit h4{ margin:0 0 10px; font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--ink-40); }
+.credit ul{ margin:0; padding-left:17px; font-size:13px; color:var(--ink-60); line-height:1.7; }
+.foot{ margin-top:clamp(34px,6vh,60px); padding:22px 0 40px; border-top:1px solid var(--rule);
+  display:flex; flex-wrap:wrap; gap:10px 20px; justify-content:space-between;
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-40); }
+
+/* =============================================================== toast */
+#toast{
+  position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom)); z-index:70;
+  transform:translate(-50%,14px); opacity:0; pointer-events:none;
+  background:var(--ink); color:var(--paper); padding:11px 18px; border-radius:100px;
+  font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+  transition:opacity .3s var(--ease), transform .3s var(--ease); max-width:calc(100vw - 32px);
+}
+#toast.on{ opacity:1; transform:translate(-50%,0); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; }
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important;
+     transition-duration:.001ms !important; scroll-behavior:auto !important; }
+  .pp{ transform:none !important; }
+}
+</style>
+</head>
+<body data-mood="playful">
+
+<!-- ============================================================ top bar -->
+<header class="topbar">
+  <div class="topbar-in">
+    <span class="mark">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="10.6" stroke="currentColor" stroke-width="2"/>
+        <circle cx="16" cy="16" r="3.8" fill="var(--accent)"/>
+        <path d="M16 5.4v3M16 23.6v3M5.4 16h3M23.6 16h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="mark-tx"><b>Candy Passport</b><i>Museum of Candy · Dubai</i></span>
+    </span>
+    <span class="tag">Concept prototype</span>
+    <span class="spacer"></span>
+    <button class="ghost" id="reset" type="button">Reset demo</button>
+  </div>
+</header>
+
+<main class="shell">
+
+<!-- ============================================================ 01 intro -->
+<section class="screen on" id="s-intro" aria-labelledby="intro-h">
+  <div class="intro">
+    <div>
+      <p class="kicker">A proposed digital layer · <b>Not an official Museum product</b></p>
+      <h1 class="display h1" id="intro-h"><span>15 Stamps.</span><span class="line2">15 Stories.</span></h1>
+      <p class="lede">Your passport is not a souvenir. It is a content system. Fifteen rooms, fifteen
+        missions, and a direction for the photo you were going to take anyway.</p>
+      <div class="btn-row">
+        <button class="btn" type="button" data-go="mood"><span class="dot"></span>Start the mission</button>
+      </div>
+      <p class="hint"><span>Tap</span><span>· Drag</span><span>· Collect</span></p>
+    </div>
+    <div class="pp-stage" id="tilt-stage">
+      <div class="pp" id="pp">
+        <div class="pp-page"></div>
+        <div class="pp-page"></div>
+        <div class="pp-cover">
+          <div class="pp-top">
+            <b>Museum of Candy</b><b>Dubai</b>
+          </div>
+          <div class="pp-crest">
+            <svg viewBox="0 0 120 120" fill="none" aria-hidden="true">
+              <circle cx="60" cy="60" r="44" stroke="currentColor" stroke-width="1.6" opacity=".5"/>
+              <circle cx="60" cy="60" r="36" stroke="currentColor" stroke-width="1" opacity=".3"/>
+              <circle cx="60" cy="52" r="17" fill="var(--accent)"/>
+              <path d="M60 52c0-9 14-9 14 0s-14 9-14 0Z" fill="rgba(255,255,255,.35)"/>
+              <path d="M60 69v26" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+              <path d="M38 96h44" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+              <path d="M24 34c6 6 10 14 11 22M96 34c-6 6-10 14-11 22" stroke="currentColor" stroke-width="1.4"
+                    stroke-linecap="round" opacity=".4"/>
+            </svg>
+          </div>
+          <div class="pp-foot">
+            <div class="t">Candy<br>Passport</div>
+            <div class="s">15 stamps · 15 stories</div>
+            <div class="band"></div>
+          </div>
+        </div>
+        <div class="pp-shadow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 02 mood -->
+<section class="screen" id="s-mood" aria-labelledby="mood-h">
+  <p class="kicker">Step 01 · Onboarding</p>
+  <h2 class="display h2" id="mood-h" style="margin-top:14px">What's your<br>candy mood?</h2>
+  <p class="lede" style="margin-top:18px">One tap. It sets the accent your passport, your stamps and your
+    Candy Story are printed in — nothing else changes.</p>
+
+  <div class="mood-grid" role="group" aria-label="Candy mood">
+    <button class="mood" type="button" data-value="playful" aria-pressed="true">
+      <span class="picked">Selected</span>
+      <span class="swatch"></span>
+      <span><b>Playful</b><i>Bright pink. Hands up, eyes closed, jump on three.</i></span>
+    </button>
+    <button class="mood" type="button" data-value="chill" aria-pressed="false">
+      <span class="picked">Selected</span>
+      <span class="swatch"></span>
+      <span><b>Chill</b><i>Gummy blue. Slow pans, soft light, one clean frame.</i></span>
+    </button>
+    <button class="mood" type="button" data-value="chaotic" aria-pressed="false">
+      <span class="picked">Selected</span>
+      <span class="swatch"></span>
+      <span><b>Chaotic</b><i>Candy yellow. Handheld, mid-air, nothing centred.</i></span>
+    </button>
+  </div>
+
+  <div class="btn-row" style="margin-top:30px">
+    <button class="btn btn--accent" type="button" data-go="passport"><span class="dot"></span>Open my passport</button>
+    <button class="btn btn--quiet" type="button" data-go="intro">Back</button>
+  </div>
+</section>
+
+<!-- ============================================================ 03 passport -->
+<section class="screen" id="s-passport" aria-labelledby="pass-h">
+  <div class="pg-head">
+    <div>
+      <p class="kicker">Step 02 · The passport</p>
+      <h2 class="display h2" id="pass-h" style="margin-top:12px">My candy<br>journey</h2>
+    </div>
+    <div class="progress-block">
+      <div class="progress-n" id="prog-n" aria-hidden="true"><span class="roll" id="prog-roll">03</span><span> / 15</span></div>
+      <p class="kicker" style="margin-top:6px">Missions complete</p>
+      <div class="pips" id="pips" role="img" aria-label="Progress: 3 of 15 missions complete"></div>
+    </div>
+  </div>
+
+  <div class="missions" id="missions"></div>
+
+  <p class="note-line">
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <circle cx="7" cy="7" r="6.2" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M7 6.2v4M7 4.1v.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    <span>Room names are drawn from publicly discussed Museum of Candy experiences and are shown here as
+    <strong>proposed missions</strong>, not confirmed official content. Nothing on this page is a real booking,
+    and no venue photography is used.</span>
+  </p>
+</section>
+
+<!-- ============================================================ 04 mission -->
+<section class="screen" id="s-mission" aria-labelledby="ms-h">
+  <div class="ms-head">
+    <div>
+      <p class="kicker">Mission 07 / 15 · <b>Proposed mission</b></p>
+      <h2 class="display h2" id="ms-h">Money tree<em>Make it rain.</em></h2>
+    </div>
+    <button class="btn btn--quiet" type="button" data-go="passport">All missions</button>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Mission directions">
+    <button class="tab" type="button" role="tab" id="tab-photo" aria-controls="p-photo" aria-selected="true">Photo</button>
+    <button class="tab" type="button" role="tab" id="tab-reel"  aria-controls="p-reel"  aria-selected="false">Reel</button>
+    <button class="tab" type="button" role="tab" id="tab-share" aria-controls="p-share" aria-selected="false">Share</button>
+  </div>
+
+  <!-- ---------------------------------------------------- photo -->
+  <div class="panel on" id="p-photo" role="tabpanel" aria-labelledby="tab-photo">
+    <div class="split">
+      <div class="vf-wrap">
+        <div class="vf">
+          <svg viewBox="0 0 240 427" role="img" aria-label="Viewfinder diagram: a 9 by 16 frame with the subject under the money tree, seen from the chosen camera height">
+            <defs><clipPath id="vf-clip"><rect x="1" y="1" width="238" height="425" rx="4"/></clipPath></defs>
+            <rect x="1" y="1" width="238" height="425" rx="4" fill="#121212"/>
+            <!-- the room, redrawn as the camera moves -->
+            <g id="vf-scene" clip-path="url(#vf-clip)">
+              <rect id="vf-floor" x="1" y="300" width="238" height="126" fill="#1D1B1A"/>
+              <g id="vf-subject">
+                <!-- money tree -->
+                <path d="M120 118v96" stroke="#4A4340" stroke-width="9" stroke-linecap="round"/>
+                <ellipse cx="120" cy="104" rx="66" ry="40" fill="#241F1E"/>
+                <ellipse cx="120" cy="98" rx="58" ry="33" fill="#2C2523"/>
+                <g id="vf-notes"></g>
+                <!-- figure: head at 223, feet at 300 -->
+                <circle cx="120" cy="238" r="15" fill="var(--accent)"/>
+                <path d="M120 254v38" stroke="var(--accent)" stroke-width="15" stroke-linecap="round"/>
+                <path d="M105 263 86 236M135 263l19-27" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
+              </g>
+            </g>
+            <!-- horizon -->
+            <line id="vf-horizon" x1="0" y1="300" x2="240" y2="300" stroke="#FFFEFB" stroke-opacity=".28" stroke-dasharray="5 6"/>
+            <!-- thirds -->
+            <g stroke="#FFFEFB" stroke-opacity=".13">
+              <line x1="80" y1="0" x2="80" y2="427"/><line x1="160" y1="0" x2="160" y2="427"/>
+              <line x1="0" y1="142" x2="240" y2="142"/><line x1="0" y1="285" x2="240" y2="285"/>
+            </g>
+            <!-- subject box -->
+            <rect id="vf-box" x="62" y="60" width="116" height="256" fill="none"
+                  stroke="#FFFEFB" stroke-opacity=".5" stroke-width="1.2"/>
+            <!-- corner brackets -->
+            <g stroke="#FFFEFB" stroke-width="2.4" fill="none">
+              <path d="M14 34V14h20M226 34V14h-20M14 393v20h20M226 393v20h-20"/>
+            </g>
+            <!-- readout -->
+            <g font-family="Inter, system-ui, sans-serif" font-size="9" letter-spacing="1.4" fill="#FFFEFB">
+              <text x="43" y="27" fill-opacity=".75">REC 0:00</text>
+              <text x="197" y="27" text-anchor="end" fill-opacity=".75">9:16</text>
+              <text x="43" y="411" fill-opacity=".75">0.5×</text>
+              <text x="197" y="411" text-anchor="end" id="vf-ang" fill="var(--accent)">0° UP</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div>
+        <p class="kicker">Step 03 · Photo direction</p>
+        <div class="verdict" id="verdict" data-v="flat" aria-live="polite">Too flat.</div>
+        <p class="verdict-sub" id="verdict-sub">Eye level leaves dead ceiling above the tree and the subject
+          is just a person standing in a room. Drop the phone.</p>
+
+        <div class="slider-block">
+          <div class="slider-lab">
+            <label for="height">Camera height</label>
+            <b><span id="h-val">1.60</span> m</b>
+          </div>
+          <input id="height" type="range" min="0" max="100" value="100" step="1"
+                 aria-describedby="verdict" aria-valuetext="1.60 metres, eye level">
+          <div class="ticks">
+            <span style="left:4%">Knee</span>
+            <span style="left:50%">Waist</span>
+            <span style="left:95%">Eye</span>
+            <i class="zone" id="zone" aria-hidden="true"></i>
+          </div>
+          <div class="vf-read">
+            <span class="chip" id="c-lens">Lens 0.5×</span>
+            <span class="chip" id="c-tilt">Tilt 0°</span>
+            <span class="chip" id="c-frame">Subject 62% of frame</span>
+          </div>
+        </div>
+
+        <div class="direction">
+          <h4>The rest of the direction</h4>
+          <ul class="dir-list">
+            <li><b>Position</b><span>Stand under the drop, not beside it.</span></li>
+            <li><b>Hands</b><span>Up and open, above the shoulder line.</span></li>
+            <li><b>Eyes</b><span>Closed or away from lens — never at it.</span></li>
+            <li><b>Timing</b><span>Shoot the second note, not the first.</span></li>
+            <li><b>Burst</b><span>Three frames. Keep the one where the hands blur.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------------------------------------------- reel -->
+  <div class="panel" id="p-reel" role="tabpanel" aria-labelledby="tab-reel">
+    <div class="split">
+      <div>
+        <div class="board">
+          <div class="board-frame">
+            <svg viewBox="0 0 320 180" role="img" aria-label="Storyboard preview of the current shot" id="board-svg">
+              <rect width="320" height="180" fill="#121212"/>
+              <g id="sb"></g>
+              <g font-family="Inter, system-ui, sans-serif" font-size="8" letter-spacing="1.4" fill="#FFFEFB" fill-opacity=".62">
+                <text x="14" y="22" id="sb-no">SHOT 01</text>
+                <text x="306" y="22" text-anchor="end" id="sb-dur">0.0s</text>
+              </g>
+            </svg>
+          </div>
+          <div class="board-cap">
+            <b id="sb-name">Arrive</b><span id="sb-frame">Wide · locked off</span>
+          </div>
+        </div>
+        <p class="small" style="margin-top:12px">Storyboard frames are drawn, not filmed. No Museum footage is used.</p>
+      </div>
+
+      <div>
+        <p class="kicker">Step 04 · Reel direction · 12 seconds</p>
+        <div class="tl">
+          <div class="tl-top">
+            <button class="play" id="play" type="button" aria-label="Play the 12 second timeline">
+              <svg viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" id="play-ico"><path d="M3 1.6 12 7l-9 5.4z"/></svg>
+            </button>
+            <div class="tl-time"><span id="t-now">0.0</span><small>/ 12.0 S</small></div>
+          </div>
+
+          <div class="track" id="track" role="slider" tabindex="0" aria-label="Timeline position in seconds"
+               aria-valuemin="0" aria-valuemax="12" aria-valuenow="0" aria-valuetext="0.0 seconds, Arrive">
+            <div class="seg" data-i="0"><b>Arrive</b></div>
+            <div class="seg" data-i="1"><b>Reaction</b></div>
+            <div class="seg" data-i="2"><b>Money drop</b></div>
+            <div class="seg" data-i="3"><b>Hero</b></div>
+            <div class="playhead" id="playhead" style="left:0%"></div>
+          </div>
+          <div class="marks" id="marks"></div>
+
+          <div class="beat">
+            <div class="k" id="b-range">00 — 02 s</div>
+            <h4 id="b-title">Arrive</h4>
+            <p id="b-note">Walk in from frame left, phone locked off at waist height. No talking, no wave.
+              The room does the work.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------------------------------------------- share -->
+  <div class="panel" id="p-share" role="tabpanel" aria-labelledby="tab-share">
+    <div class="split">
+      <div class="story-wrap">
+        <div class="story" id="story">
+          <div class="story-top"><span>Museum of Candy</span><span>Dubai</span></div>
+          <svg class="story-stamp" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+            <circle cx="60" cy="60" r="52" stroke="currentColor" stroke-width="3" stroke-dasharray="7 5"/>
+            <circle cx="60" cy="60" r="41" stroke="currentColor" stroke-width="1.6"/>
+            <text x="60" y="55" text-anchor="middle" font-family="Poppins, Inter, sans-serif" font-weight="800"
+                  font-size="26" fill="currentColor">07</text>
+            <text x="60" y="76" text-anchor="middle" font-family="Inter, sans-serif" font-size="9"
+                  letter-spacing="2" fill="currentColor">STAMPED</text>
+          </svg>
+          <div class="story-mid">
+            <div class="k">My candy story<br>Mission 07 / 15</div>
+            <h3>Money<br>tree</h3>
+            <div class="sub">Make it rain.</div>
+          </div>
+          <div class="story-rule"></div>
+          <div class="story-foot">
+            <span><b id="story-mood">Playful</b><br><i>Candy mood</i></span>
+            <span style="text-align:right"><b>#MOCMission07</b><br><i>Museum of Candy Dubai</i></span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="kicker">Step 05 · The social object</p>
+        <h3 class="display h3" style="margin-top:12px">A 9:16 asset the<br>visitor actually wants.</h3>
+        <p class="lede" style="margin-top:16px">The card is generated from what they just did — mission, mood,
+          progress — so the museum gets a branded story frame without asking anyone to design one.</p>
+        <div class="btn-row" style="margin-top:24px">
+          <button class="btn btn--quiet" type="button" id="share">Copy the caption</button>
+        </div>
+        <p class="small" style="margin-top:14px">Caption: <span class="mono">Mission 07 / 15 — Money Tree. Make it rain.
+          Museum of Candy Dubai. #MOCMission07 #MuseumOfCandy</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------------------------------------------- collect -->
+  <div class="collect-bar">
+    <div>
+      <p class="small">One mission ends with one stamp. The passport takes the hit, the counter moves, and the
+        visitor has a reason to walk into room eight.</p>
+      <div class="done-flag" id="done-flag">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2.4 7.4 5.6 10.6 11.6 3.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Mission complete
+      </div>
+    </div>
+    <div class="stamp-zone">
+      <button class="btn btn--accent" type="button" id="collect"><span class="dot"></span>Collect stamp</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 05 done -->
+<section class="screen" id="s-done" aria-labelledby="done-h">
+  <p class="kicker">Step 06 · Progress</p>
+  <h2 class="display h2" id="done-h" style="margin-top:12px">Stamp 04<br>collected.</h2>
+  <p class="lede" style="margin-top:18px">Eleven rooms left. The passport now knows which ones, and the museum
+    now has a reason to post a mission a week instead of a photo a week.</p>
+
+  <div class="btn-row" style="margin-top:28px">
+    <button class="btn" type="button" data-go="passport"><span class="dot"></span>Back to my passport</button>
+    <button class="btn btn--quiet" type="button" data-go="mission" data-tab="share">See the story card</button>
+  </div>
+
+  <section class="extend" aria-labelledby="ext-h">
+    <p class="kicker">The commercial case</p>
+    <h3 class="display h3" id="ext-h" style="margin-top:12px">One system.<br>Multiple uses.</h3>
+    <p class="lede" style="margin-top:16px">The mission engine is the product. Swapping the mission set is a
+      content decision, not a build — which is what makes it worth running.</p>
+    <div class="ext-grid">
+      <div class="ext"><b>Birthdays</b><p>A group mission built to be filmed, with one stamp the birthday guest
+        collects on behalf of the table.</p></div>
+      <div class="ext"><b>Schools</b><p>A Candy Lab mission written around what the group just learned, so the
+        trip comes home with a visible output.</p></div>
+      <div class="ext"><b>Wednesday</b><p>A bonus stamp tied to the flavour activation — a reason to come on the
+        quiet day.</p></div>
+      <div class="ext"><b>Corporate</b><p>A team mission where the stamps only complete if the whole group
+        finishes. Private hire, filmed by design.</p></div>
+    </div>
+    <p class="small" style="margin-top:16px">Extensions are proposed directions. No pricing, uptake or performance
+      figures are claimed.</p>
+  </section>
+
+  <section class="credit" aria-label="Attribution">
+    <div>
+      <h4>Mine</h4>
+      <ul>
+        <li>Concept and campaign mechanic</li>
+        <li>UX flow and interface design</li>
+        <li>Typography, layout and visual system</li>
+        <li>Every graphic on this page — drawn in SVG and CSS</li>
+        <li>Motion, photo direction and reel direction</li>
+        <li>Front-end build</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Not mine · and not used</h4>
+      <ul>
+        <li>No Museum of Candy photography, footage or logo appears here</li>
+        <li>No AI-generated imagery of the venue</li>
+        <li>Room names come from publicly discussed experiences and are labelled as proposed</li>
+        <li>The Museum's own brand assets would replace this prototype's palette and marks</li>
+      </ul>
+    </div>
+  </section>
+</section>
+
+</main>
+
+<footer class="shell">
+  <div class="foot">
+    <span>The Candy Passport · Concept prototype</span>
+    <span>15 stamps · 15 stories</span>
+    <span>Unofficial · Not affiliated with Museum of Candy</span>
+  </div>
+</footer>
+
+<div id="ink" aria-hidden="true"></div>
+<svg id="flyer" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+  <circle cx="60" cy="60" r="54" stroke="currentColor" stroke-width="4" stroke-dasharray="8 6"/>
+  <circle cx="60" cy="60" r="42" stroke="currentColor" stroke-width="2"/>
+  <text x="60" y="54" text-anchor="middle" font-family="Poppins, Inter, sans-serif" font-weight="800"
+        font-size="27" fill="currentColor">07</text>
+  <text x="60" y="76" text-anchor="middle" font-family="Inter, sans-serif" font-size="9.5"
+        letter-spacing="2.4" fill="currentColor">STAMPED</text>
+</svg>
+<div id="toast" role="status" aria-live="polite"></div>
+<p class="sr" id="live" role="status" aria-live="polite"></p>
+
+<script>
+(function () {
+'use strict';
+
+var REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+var $  = function (s, r) { return (r || document).querySelector(s); };
+var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
+var clamp = function (v, a, b) { return v < a ? a : (v > b ? b : v); };
+
+/* ------------------------------------------------------------ the data.
+   Room names come from publicly discussed Museum of Candy experiences and are
+   carried through the UI as PROPOSED, never as confirmed official content. */
+var MISSIONS = [
+  'Sweetopia', 'Lettergram', 'Candy Paradise', 'Chill & Thrill', 'Fairy Floss',
+  'Night in Paris', 'Money Tree', 'Louvre of Lollies', 'Gummy Bear Pool', 'Candy Lab',
+  'Lollipop Forest', 'Cotton Candy Clouds', 'Scent Station', 'Vogue Frame', 'Surprise Mission'
+];
+var HERO = 7;                      /* the one mission that is actually built out */
+var state = { mood: 'playful', done: 3, screen: 'intro', collected: false };
+
+/* ------------------------------------------------------------ screens */
+function show(name) {
+  var el = document.getElementById('s-' + name);
+  if (!el) return;
+  $$('.screen').forEach(function (s) { s.classList.remove('on'); });
+  el.classList.add('on');
+  state.screen = name;
+  var y = el.getBoundingClientRect().top + scrollY - 78;
+  scrollTo({ top: Math.max(0, y), behavior: REDUCE ? 'auto' : 'smooth' });
+  var h = $('h1, h2', el);
+  if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+}
+$$('[data-go]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    if (b.dataset.tab) document.getElementById('tab-' + b.dataset.tab).click();
+    show(b.dataset.go);
+  });
+});
+
+var toastT;
+function toast(msg) {
+  var t = $('#toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(function () { t.classList.remove('on'); }, 2200);
+}
+function say(msg) { $('#live').textContent = msg; }
+
+/* ------------------------------------------------------------ 01 · the tilt
+   Small on purpose. The passport is a physical object being held, not a 3-D
+   model being shown off, so the whole range is about six degrees. */
+(function () {
+  var stage = $('#tilt-stage'), pp = $('#pp');
+  if (!stage || !pp || REDUCE) return;
+  var raf = 0, tx = 0, ty = 0, cx = 0, cy = 0;
+  function loop() {
+    cx += (tx - cx) * .12; cy += (ty - cy) * .12;
+    pp.style.transform = 'rotateX(' + cy.toFixed(2) + 'deg) rotateY(' + cx.toFixed(2) + 'deg)';
+    raf = (Math.abs(tx - cx) > .01 || Math.abs(ty - cy) > .01) ? requestAnimationFrame(loop) : 0;
+  }
+  function aim(e) {
+    var r = stage.getBoundingClientRect();
+    tx = ((e.clientX - r.left) / r.width - .5) * 12;
+    ty = -((e.clientY - r.top) / r.height - .5) * 9;
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+  stage.addEventListener('pointermove', aim, { passive: true });
+  stage.addEventListener('pointerleave', function () {
+    tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(loop);
+  }, { passive: true });
+})();
+
+/* ------------------------------------------------------------ 02 · mood */
+$$('.mood').forEach(function (b) {
+  b.addEventListener('click', function () {
+    $$('.mood').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+    state.mood = b.dataset.value;
+    document.body.dataset.mood = state.mood;
+    var label = b.dataset.value.charAt(0).toUpperCase() + b.dataset.value.slice(1);
+    $('#story-mood').textContent = label;
+    say(label + ' mood selected.');
+  });
+});
+
+/* ------------------------------------------------------------ 03 · passport */
+var STAMP_ICO =
+  '<svg class="stamp-ico" viewBox="0 0 40 40" fill="none" aria-hidden="true">' +
+  '<circle cx="20" cy="20" r="17" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3"/>' +
+  '<circle cx="20" cy="20" r="12" stroke="currentColor" stroke-width="1.2"/>' +
+  '<path d="M14 20.4 18 24.4 26.4 16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+  '</svg>';
+
+function paintPassport() {
+  /* the counter */
+  var roll = $('#prog-roll');
+  var next = ('0' + state.done).slice(-2);
+  if (roll.textContent !== next) {
+    roll.textContent = next;
+    roll.classList.remove('tick'); void roll.offsetWidth; roll.classList.add('tick');
+  }
+  /* the fifteen silhouettes — the progress bar the concept actually asks for */
+  var pips = $('#pips');
+  pips.innerHTML = '';
+  for (var i = 1; i <= 15; i++) {
+    var p = document.createElement('span');
+    p.className = 'pip' + (i <= state.done ? ' done' : (i === HERO && !state.collected ? ' now' : ''));
+    pips.appendChild(p);
+  }
+  pips.setAttribute('aria-label', 'Progress: ' + state.done + ' of 15 missions complete');
+
+  /* the grid */
+  var wrap = $('#missions');
+  wrap.innerHTML = '';
+  MISSIONS.forEach(function (name, idx) {
+    var n = idx + 1;
+    var heroDone = state.collected;
+    var st = n <= 3 ? 'done' : (n === HERO ? (heroDone ? 'done' : 'open') : 'locked');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'mission';
+    b.dataset.state = st;
+    b.innerHTML =
+      (n === HERO && !heroDone ? '<span class="flag new">New</span>' : '') +
+      (st === 'done' ? STAMP_ICO : '') +
+      '<span class="no">Mission ' + ('0' + n).slice(-2) + '</span>' +
+      '<span class="nm">' + name + '</span>' +
+      '<span class="st">' + (st === 'done' ? 'Stamped' : st === 'open' ? 'Open now' :
+        'Proposed · locked') + '</span>';
+    if (st === 'locked') {
+      b.setAttribute('aria-disabled', 'true');
+      b.addEventListener('click', function () { toast('Unlocks when you reach the room'); });
+    } else if (n === HERO) {
+      b.addEventListener('click', function () { show('mission'); });
+    } else {
+      b.addEventListener('click', function () { toast('Already stamped'); });
+    }
+    wrap.appendChild(b);
+  });
+}
+
+/* ------------------------------------------------------------ 04 · tabs */
+$$('.tab').forEach(function (t) {
+  t.addEventListener('click', function () {
+    $$('.tab').forEach(function (o) { o.setAttribute('aria-selected', String(o === t)); });
+    $$('.panel').forEach(function (p) { p.classList.toggle('on', p.id === t.getAttribute('aria-controls')); });
+  });
+  t.addEventListener('keydown', function (e) {
+    var all = $$('.tab'), i = all.indexOf(t);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      var nx = all[(i + (e.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length];
+      nx.focus(); nx.click();
+    }
+  });
+});
+
+/* ------------------------------------------- 05 · the camera-height control
+   The slider is the argument. 100 is eye level and 0 is knee height; the
+   frame redraws underneath it so the reason for going low is visible rather
+   than described — the tree opens up, the notes separate from the ceiling,
+   and the subject stops being a figure standing in a room. */
+var HEIGHT = { eye: 1.60, knee: 0.40 };
+var TARGET = [18, 34];                          /* where the direction lands */
+
+function paintCamera(v) {
+  var t = v / 100;                              /* 1 = eye, 0 = knee */
+  var metres = HEIGHT.knee + (HEIGHT.eye - HEIGHT.knee) * t;
+  var tilt = Math.round((1 - t) * 34);          /* the lower you go, the more up */
+
+  /* The frame is redrawn off one number. Dropping the lens does two things at
+     once and the diagram has to show both: the subject grows, and because the
+     camera tilts up to keep them framed, the floor line goes down with the
+     feet while the canopy climbs into the top of frame. Scaling about a point
+     up at chest height (120,200) gives exactly that — feet down, canopy up —
+     where scaling about the feet would have pushed the tree down too. */
+  var sc = 1 + (1 - t) * .72;
+  var feet = 200 + 100 * sc;                    /* the figure's own base line */
+  $('#vf-subject').setAttribute('transform',
+    'translate(120,200) scale(' + sc.toFixed(3) + ') translate(-120,-200)');
+  $('#vf-horizon').setAttribute('y1', feet.toFixed(1));
+  $('#vf-horizon').setAttribute('y2', feet.toFixed(1));
+  $('#vf-floor').setAttribute('y', feet.toFixed(1));
+  $('#vf-floor').setAttribute('height', Math.max(0, 427 - feet).toFixed(1));
+  /* the subject guide tracks head to feet rather than sitting still */
+  var top = 200 + 23 * sc;
+  $('#vf-box').setAttribute('x', (120 - 58 * sc).toFixed(1));
+  $('#vf-box').setAttribute('width', (116 * sc).toFixed(1));
+  $('#vf-box').setAttribute('y', (top - 14).toFixed(1));
+  $('#vf-box').setAttribute('height', (feet - top + 24).toFixed(1));
+  $('#vf-ang').textContent = tilt + '° UP';
+
+  /* readouts */
+  $('#h-val').textContent = metres.toFixed(2);
+  $('#c-tilt').textContent = 'Tilt ' + tilt + '°';
+  $('#c-frame').textContent = 'Subject ' + Math.round(58 + (1 - t) * 30) + '% of frame';
+  var inZone = v >= TARGET[0] && v <= TARGET[1];
+  $('#c-tilt').classList.toggle('hot', inZone);
+  $('#c-frame').classList.toggle('hot', inZone);
+  $('#height').classList.toggle('at-target', inZone);
+
+  /* the verdict */
+  var vd = $('#verdict'), sub = $('#verdict-sub'), key, text, note;
+  if (v > 62)      { key = 'flat';   text = 'Too flat.';  note = 'Eye level leaves dead ceiling above the tree and the subject is just a person standing in a room. Drop the phone.'; }
+  else if (v > 34) { key = 'better'; text = 'Better.';    note = 'The canopy is opening up and the notes have started to separate. Keep going down — you are not there yet.'; }
+  else if (v >= TARGET[0]) { key = 'target'; text = "That's it."; note = 'Waist height, tilted up. The tree fills the top third, the notes read against dark, and the subject owns the frame.'; }
+  else             { key = 'low';    text = 'Too low.';   note = 'Below the knee the ceiling takes over and the face is lost to the chin. Come back up a little.'; }
+  if (vd.dataset.v !== key) {
+    vd.dataset.v = key; vd.textContent = text; sub.textContent = note;
+    say(text + ' ' + note);
+  }
+  $('#height').setAttribute('aria-valuetext', metres.toFixed(2) + ' metres. ' + text);
+}
+(function () {
+  /* the target zone, drawn on the tick rail so the goal is visible */
+  var z = $('#zone');
+  z.style.left = TARGET[0] + '%';
+  z.style.width = (TARGET[1] - TARGET[0]) + '%';
+  var h = $('#height');
+  h.addEventListener('input', function () { paintCamera(+h.value); });
+  paintCamera(+h.value);
+
+  /* falling notes in the canopy — drawn once, no animation loop */
+  var g = $('#vf-notes'), out = '';
+  var seeds = [[74,132,-14],[96,158,9],[118,142,-6],[141,166,17],[160,136,-11],[86,186,7],[132,196,-16],[150,210,11]];
+  seeds.forEach(function (s) {
+    out += '<rect x="' + s[0] + '" y="' + s[1] + '" width="15" height="9" rx="1.5" fill="var(--accent)" ' +
+           'opacity="' + (0.5 + (s[2] % 5) / 12).toFixed(2) + '" transform="rotate(' + s[2] + ' ' + (s[0] + 7) + ' ' + (s[1] + 4) + ')"/>';
+  });
+  g.innerHTML = out;
+})();
+
+/* ------------------------------------------------- 06 · the 12-second reel */
+var SHOTS = [
+  { a: 0, b: 2,  name: 'Arrive',     frame: 'Wide · locked off',
+    note: 'Walk in from frame left, phone locked off at waist height. No talking, no wave. The room does the work.' },
+  { a: 2, b: 5,  name: 'Reaction',   frame: 'Mid · handheld',
+    note: 'Step in to a mid shot and catch the look up. One beat of stillness here is what makes the drop land.' },
+  { a: 5, b: 8,  name: 'Money drop', frame: 'Low · 0.5× · tilt up',
+    note: 'Down to waist height, wide lens, tilt up. Shoot the second note. Let the hands blur — sharp hands look posed.' },
+  { a: 8, b: 12, name: 'Hero',       frame: 'Low · push in',
+    note: 'Hold the low angle and push in half a step. Cut on the last note leaving frame, not on the smile.' }
+];
+var SB = [
+  /* four drawn storyboard frames, one per shot */
+  '<rect x="0" y="118" width="320" height="62" fill="#1D1B1A"/>' +
+  '<circle cx="86" cy="104" r="11" fill="var(--accent)"/><path d="M86 116v30" stroke="var(--accent)" stroke-width="11" stroke-linecap="round"/>' +
+  '<ellipse cx="212" cy="72" rx="52" ry="27" fill="#2C2523"/><path d="M212 88v58" stroke="#4A4340" stroke-width="7" stroke-linecap="round"/>' +
+  '<path d="M22 150h44" stroke="#FFFEFB" stroke-opacity=".2" stroke-width="2"/>',
+
+  '<rect x="0" y="128" width="320" height="52" fill="#1D1B1A"/>' +
+  '<ellipse cx="176" cy="52" rx="66" ry="32" fill="#2C2523"/>' +
+  '<circle cx="160" cy="112" r="19" fill="var(--accent)"/><path d="M160 134v42" stroke="var(--accent)" stroke-width="19" stroke-linecap="round"/>' +
+  '<rect x="196" y="70" width="14" height="8" rx="1.5" fill="var(--accent)" opacity=".8" transform="rotate(14 203 74)"/>',
+
+  '<rect x="0" y="150" width="320" height="30" fill="#1D1B1A"/>' +
+  '<ellipse cx="160" cy="36" rx="104" ry="42" fill="#2C2523"/>' +
+  '<circle cx="160" cy="122" r="22" fill="var(--accent)"/><path d="M160 146v34" stroke="var(--accent)" stroke-width="22" stroke-linecap="round"/>' +
+  '<path d="M138 128 108 92M182 128l30-36" stroke="var(--accent)" stroke-width="13" stroke-linecap="round"/>' +
+  '<g fill="var(--accent)" opacity=".85">' +
+  '<rect x="96" y="62" width="17" height="10" rx="2" transform="rotate(-18 104 67)"/>' +
+  '<rect x="146" y="80" width="17" height="10" rx="2" transform="rotate(12 154 85)"/>' +
+  '<rect x="196" y="58" width="17" height="10" rx="2" transform="rotate(-8 204 63)"/>' +
+  '<rect x="122" y="100" width="17" height="10" rx="2" transform="rotate(22 130 105)"/>' +
+  '<rect x="186" y="104" width="17" height="10" rx="2" transform="rotate(-14 194 109)"/></g>',
+
+  '<rect x="0" y="156" width="320" height="24" fill="#1D1B1A"/>' +
+  '<ellipse cx="160" cy="22" rx="126" ry="46" fill="#2C2523"/>' +
+  '<circle cx="160" cy="112" r="30" fill="var(--accent)"/><path d="M160 148v32" stroke="var(--accent)" stroke-width="30" stroke-linecap="round"/>' +
+  '<rect x="206" y="88" width="19" height="11" rx="2" fill="var(--accent)" opacity=".7" transform="rotate(16 215 93)"/>'
+];
+var reel = { t: 0, playing: false, raf: 0, last: 0 };
+
+function shotAt(t) {
+  for (var i = 0; i < SHOTS.length; i++) if (t < SHOTS[i].b || i === SHOTS.length - 1) return i;
+  return 0;
+}
+function paintReel() {
+  var t = reel.t, i = shotAt(t), s = SHOTS[i];
+  $('#playhead').style.left = (t / 12 * 100) + '%';
+  $('#t-now').textContent = t.toFixed(1);
+  $$('.seg').forEach(function (el, k) { el.classList.toggle('on', k === i); });
+  var track = $('#track');
+  track.setAttribute('aria-valuenow', t.toFixed(1));
+  track.setAttribute('aria-valuetext', t.toFixed(1) + ' seconds, ' + s.name);
+  if ($('#sb-name').textContent !== s.name) {
+    $('#sb').innerHTML = SB[i];
+    $('#sb-name').textContent = s.name;
+    $('#sb-frame').textContent = s.frame;
+    $('#sb-no').textContent = 'SHOT 0' + (i + 1);
+    $('#b-range').textContent = ('0' + s.a).slice(-2) + ' — ' + ('0' + s.b).slice(-2) + ' s';
+    $('#b-title').textContent = s.name;
+    $('#b-note').textContent = s.note;
+  }
+  $('#sb-dur').textContent = (t - s.a).toFixed(1) + 's';
+}
+function seek(t) { reel.t = clamp(t, 0, 12); paintReel(); }
+
+(function () {
+  /* segment widths and the second markers, both off the same 12s scale */
+  $$('.seg').forEach(function (el, i) {
+    el.style.left = (SHOTS[i].a / 12 * 100) + '%';
+    el.style.width = ((SHOTS[i].b - SHOTS[i].a) / 12 * 100) + '%';
+  });
+  var m = $('#marks'), out = '';
+  [0, 2, 5, 8, 12].forEach(function (s) {
+    var pos = clamp(s / 12 * 100, 2, 98);
+    out += '<span style="left:' + pos + '%">' + ('0' + s).slice(-2) + '</span>';
+  });
+  m.innerHTML = out;
+
+  var track = $('#track'), dragging = false;
+  function fromEvent(e) {
+    var r = track.getBoundingClientRect();
+    seek((e.clientX - r.left) / r.width * 12);
+  }
+  track.addEventListener('pointerdown', function (e) {
+    dragging = true; stop(); track.setPointerCapture(e.pointerId); fromEvent(e);
+  });
+  track.addEventListener('pointermove', function (e) { if (dragging) fromEvent(e); });
+  ['pointerup', 'pointercancel'].forEach(function (n) {
+    track.addEventListener(n, function () { dragging = false; });
+  });
+  track.addEventListener('keydown', function (e) {
+    var step = e.shiftKey ? 1 : .2;
+    if (e.key === 'ArrowRight') { e.preventDefault(); stop(); seek(reel.t + step); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); stop(); seek(reel.t - step); }
+    else if (e.key === 'Home') { e.preventDefault(); stop(); seek(0); }
+    else if (e.key === 'End') { e.preventDefault(); stop(); seek(12); }
+    else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); }
+  });
+  $('#play').addEventListener('click', toggle);
+  paintReel();
+})();
+
+function tick(now) {
+  if (!reel.playing) return;
+  var dt = (now - reel.last) / 1000 || 0;
+  reel.last = now;
+  reel.t += dt;
+  if (reel.t >= 12) { reel.t = 12; paintReel(); stop(); return; }
+  paintReel();
+  reel.raf = requestAnimationFrame(tick);
+}
+function play() {
+  if (reel.t >= 12) reel.t = 0;
+  reel.playing = true; reel.last = performance.now();
+  $('#play-ico').innerHTML = '<rect x="3" y="2" width="3" height="10" rx="1"/><rect x="8" y="2" width="3" height="10" rx="1"/>';
+  $('#play').setAttribute('aria-label', 'Pause the timeline');
+  reel.raf = requestAnimationFrame(tick);
+}
+function stop() {
+  reel.playing = false; cancelAnimationFrame(reel.raf);
+  $('#play-ico').innerHTML = '<path d="M3 1.6 12 7l-9 5.4z"/>';
+  $('#play').setAttribute('aria-label', 'Play the 12 second timeline');
+}
+function toggle() { reel.playing ? stop() : play(); }
+
+/* ------------------------------------------------------------ 07 · the stamp
+   One physical reaction, not a firework: the stamp falls in, compresses on
+   impact, the ink spreads out of the middle of it, the page takes the hit and
+   the counter moves. Under reduced motion it is simply already done. */
+function collect() {
+  if (state.collected) { show('done'); return; }
+  var btn = $('#collect');
+  btn.disabled = true;
+  state.collected = true;
+  state.done = 4;
+
+  var finish = function () {
+    paintPassport();
+    $('#done-flag').classList.add('on');
+    say('Mission 07 stamped. Four of fifteen missions complete.');
+    setTimeout(function () { show('done'); }, REDUCE ? 0 : 620);
+  };
+
+  if (REDUCE) { finish(); return; }
+
+  var fly = $('#flyer'), ink = $('#ink');
+  fly.classList.remove('go'); ink.classList.remove('go');
+  void fly.offsetWidth;
+  fly.classList.add('go');
+  setTimeout(function () { ink.classList.add('go'); }, 300);
+  setTimeout(function () {
+    document.querySelector('#s-mission .collect-bar').classList.add('jolt');
+  }, 320);
+  setTimeout(function () {
+    document.querySelector('#s-mission .collect-bar').classList.remove('jolt');
+  }, 700);
+  setTimeout(finish, 780);
+}
+$('#collect').addEventListener('click', collect);
+
+/* ------------------------------------------------------------ share */
+$('#share').addEventListener('click', function () {
+  var text = 'Mission 07 / 15 — Money Tree. Make it rain. Museum of Candy Dubai. #MOCMission07 #MuseumOfCandy';
+  if (navigator.share) {
+    navigator.share({ text: text }).catch(function () {});
+    return;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(
+      function () { toast('Caption copied'); },
+      function () { toast('Select the caption to copy'); }
+    );
+  } else toast('Select the caption to copy');
+});
+
+/* ------------------------------------------------------------ reset */
+$('#reset').addEventListener('click', function () {
+  state = { mood: 'playful', done: 3, screen: 'intro', collected: false };
+  document.body.dataset.mood = 'playful';
+  $$('.mood').forEach(function (o) { o.setAttribute('aria-pressed', String(o.dataset.value === 'playful')); });
+  $('#story-mood').textContent = 'Playful';
+  $('#collect').disabled = false;
+  $('#done-flag').classList.remove('on');
+  $('.tab').click();
+  stop(); seek(0);
+  $('#height').value = 100; paintCamera(100);
+  paintPassport();
+  show('intro');
+  toast('Demo reset');
+});
+
+paintPassport();
+})();
+</script>
+</body>
+</html>
